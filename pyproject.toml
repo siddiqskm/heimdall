@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "heimdall"
+version = "0.1.0"
+description = "Conversation gatekeeper with dwell-based routing"
+authors = ["Siddiq Hussain"]
+packages = [{ include = "heimdall" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "*"
+scikit-learn = "*"
+sentence-transformers = "*"
+joblib = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
