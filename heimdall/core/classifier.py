@@ -45,10 +45,9 @@ class Classifier:
         # ------------------------------------------------------------------
         # Runtime persistence paths (user-scoped state only)
         # ------------------------------------------------------------------
-        self.state_path: Path = self.config.state_dir / "user_delta.json"
-        self.proto_user_path: Path = (
-            self.config.state_dir / "prototypes_user.json"
-        )
+        self.state_path: Path = self.config.user_delta_path
+        self.proto_user_path: Path = self.config.user_prototypes_path
+
 
         # ------------------------------------------------------------------
         # Bias state

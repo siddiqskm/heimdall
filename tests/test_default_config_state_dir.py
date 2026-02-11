@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+
 from _pytest.monkeypatch import MonkeyPatch
 
 from heimdall.core.classifier import Classifier
@@ -15,28 +16,32 @@ def test_default_config_creates_state_and_files(
     """
     Ensure that:
 
-    1. default_config() creates ~/.heimdall
-    2. persist() creates required JSON runtime files
-    3. Files contain valid JSON
+    1. default_config() resolves to ~/.heimdall
+    2. Classifier creates the directory
+    3. persist() creates canonical runtime JSON files
+    4. Files contain valid JSON
     """
 
     # Redirect HOME to temporary directory
     monkeypatch.setenv("HOME", str(tmp_path))
 
-    # Instantiate classifier (creates directory)
+    # Instantiate classifier using default config
     clf = Classifier()
+    cfg = default_config()
 
     expected_dir = tmp_path / ".heimdall"
 
     # ---- Directory must exist ----
+    assert cfg.state_dir == expected_dir
     assert expected_dir.exists()
     assert expected_dir.is_dir()
 
     # ---- Persist runtime state ----
     clf.persist()
 
-    user_delta_file = expected_dir / "user_delta.json"
-    user_proto_file = expected_dir / "prototypes_user.json"
+    # ---- Canonical runtime paths ----
+    user_delta_file = cfg.user_delta_path
+    user_proto_file = cfg.user_prototypes_path
 
     # ---- Files must exist ----
     assert user_delta_file.exists()
@@ -50,7 +55,3 @@ def test_default_config_creates_state_and_files(
     with user_proto_file.open() as f:
         user_proto_data = json.load(f)
         assert isinstance(user_proto_data, dict)
-
-    # ---- Ensure default_config resolves correctly ----
-    cfg = default_config()
-    assert cfg.state_dir == expected_dir

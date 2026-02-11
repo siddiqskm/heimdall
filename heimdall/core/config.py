@@ -9,30 +9,9 @@ class HeimdallConfig:
     """
     Runtime configuration for Heimdall.
 
-    state_dir:
-        Directory where runtime JSON state is stored.
+    Only `state_dir` is configurable.
 
-    models_dir:
-        Optional override for model storage.
-
-    --- Behavioral parameters ---
-    session_proto_threshold:
-        Threshold for session prototype activation.
-
-    user_proto_threshold:
-        Threshold for user prototype activation.
-
-    offline_proto_threshold:
-        Threshold for offline prototype activation.
-
-    session_proto_limit:
-        Max session prototypes per label.
-
-    user_proto_limit:
-        Max user prototypes per label.
-
-    offline_proto_limit:
-        Max offline prototypes per label.
+    All runtime filenames are canonical and enforced.
     """
 
     state_dir: Path
@@ -47,6 +26,20 @@ class HeimdallConfig:
     session_proto_limit: int = 5
     user_proto_limit: int = 15
     offline_proto_limit: int = 50
+
+    # ------------------------------------------------------------------
+    # Canonical runtime paths (NOT configurable)
+    # ------------------------------------------------------------------
+
+    @property
+    def user_delta_path(self) -> Path:
+        return self.state_dir / "user_delta.json"
+
+    @property
+    def user_prototypes_path(self) -> Path:
+        return self.state_dir / "prototypes_user.json"
+
+    # ------------------------------------------------------------------
 
     def ensure_dirs(self) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)
