@@ -1,6 +1,6 @@
 # core/decision.py
 
-from core.types import Label
+from heimdall.core.types import Label
 
 # ---- label constants (runtime + typed) ----
 SILENT: Label = "SILENT"

@@ -1,20 +1,19 @@
 # adapt/outcome.py
 
-from typing import Optional
 
-from core.types import (
-    SystemAction,
-    Outcome,
-    NONE,
-    ESCALATED,
-    CONTINUED,
+from heimdall.core.types import (
     ACK_MINIMAL,
+    CONTINUED,
+    ESCALATED,
+    NONE,
+    Outcome,
+    SystemAction,
 )
 
 
 def infer_outcome(
     prev_action: SystemAction,
-    next_input: Optional[str],
+    next_input: str | None,
     time_gap: float,
 ) -> Outcome:
     if next_input is None:

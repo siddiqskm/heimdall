@@ -1,7 +1,8 @@
 # core/router.py
 
-from typing import Mapping
-from core.types import Label, SystemAction
+from collections.abc import Mapping
+
+from heimdall.core.types import Label, SystemAction
 
 _ROUTE_TABLE: Mapping[Label, SystemAction] = {
     "SILENT": "NO_RESPONSE",
@@ -10,6 +11,7 @@ _ROUTE_TABLE: Mapping[Label, SystemAction] = {
     "TOPIC_RESET": "RESET_CONTEXT",
     "HOSTILE": "SUPPRESS",
 }
+
 
 def route(label: Label) -> SystemAction:
     return _ROUTE_TABLE[label]

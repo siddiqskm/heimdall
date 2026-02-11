@@ -1,12 +1,11 @@
 # adapt/learner.py
 
-from typing import Dict
 
-from core.types import Label, Outcome, ESCALATED, NONE
-from adapt.config import MAX_BIAS, DECAY, REWARD, PENALTY
+from heimdall.adapt.config import DECAY, MAX_BIAS, PENALTY, REWARD
+from heimdall.core.types import ESCALATED, NONE, Label, Outcome
 
 
-def apply_decay(user_delta: Dict[Label, float]) -> None:
+def apply_decay(user_delta: dict[Label, float]) -> None:
     """
     Apply exponential decay to all user bias values.
     """
@@ -22,7 +21,7 @@ def clamp(value: float) -> float:
 
 
 def update_user_delta(
-    user_delta: Dict[Label, float],
+    user_delta: dict[Label, float],
     label: Label,
     outcome: Outcome,
 ) -> None:

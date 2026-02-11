@@ -2,16 +2,19 @@
 
 import json
 import os
-from typing import Dict
+from pathlib import Path
+
 import numpy as np
 from numpy.typing import NDArray
 
-
 BiasVector = NDArray[np.float64]
-UserDelta = Dict[str, BiasVector]
+UserDelta = dict[str, BiasVector]
+PathLike = str | Path
 
 
-def save_user_delta(path: str, user_delta: UserDelta) -> None:
+def save_user_delta(path: PathLike, user_delta: UserDelta) -> None:
+    path = Path(path)
+    
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
     serializable = {
@@ -22,9 +25,11 @@ def save_user_delta(path: str, user_delta: UserDelta) -> None:
         json.dump(serializable, f)
 
 
-def load_user_delta(path: str) -> UserDelta:
+def load_user_delta(path: PathLike) -> UserDelta:
+    path = Path(path)
+
     try:
-        with open(path, "r") as f:
+        with open(path) as f:
             raw = json.load(f)
     except FileNotFoundError:
         return {}

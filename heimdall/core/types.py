@@ -1,6 +1,6 @@
 # core/types.py
 
-from typing import Literal, Final
+from typing import Final, Literal
 
 # =====================
 # Labels

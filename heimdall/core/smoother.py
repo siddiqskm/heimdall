@@ -1,12 +1,13 @@
 # core/smoother.py
 
-from typing import Dict, Tuple
-from core.types import Label
+
+from heimdall.core.types import Label
+
 
 class ConfidenceSmoother:
     def __init__(self, alpha: float = 0.7) -> None:
         self.alpha = alpha
-        self.state: Dict[Tuple[str, Label], float] = {}
+        self.state: dict[tuple[str, Label], float] = {}
 
     def apply(self, user_id: str, label: Label, confidence: float) -> float:
         key = (user_id, label)

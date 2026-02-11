@@ -1,45 +1,62 @@
 # playground.py
 
-from core.dwell import LabelDwell
-from core.embedder import Embedder
-from core.classifier import Classifier
-from core.decision import decide
-from core.router import route
-from core.types import (
-    Label,
-    SystemAction,
-    LABEL_TO_ID,
-    Outcome,
-    NONE,
-    ESCALATED,
-    SILENT,
-    NO_RESPONSE,
-)
-from adapt.outcome import infer_outcome
-from core.learning_gate import LearningGate
-
-import time
 import string
+import time
+from pathlib import Path
 
+from heimdall.adapt.outcome import infer_outcome
+from heimdall.core.classifier import Classifier
+from heimdall.core.config import HeimdallConfig
+from heimdall.core.decision import decide
+from heimdall.core.dwell import LabelDwell
+from heimdall.core.embedder import Embedder
+from heimdall.core.learning_gate import LearningGate
+from heimdall.core.router import route
+from heimdall.core.types import (
+    ESCALATED,
+    LABEL_TO_ID,
+    NO_RESPONSE,
+    NONE,
+    SILENT,
+    Label,
+    Outcome,
+    SystemAction,
+)
+
+# ------------------------------------------------------------------
+# Config
+# ------------------------------------------------------------------
+
+STATE_DIR = Path(".playground_state")
+PERSIST_INTERVAL_SECONDS = 10
+
+config = HeimdallConfig(state_dir=STATE_DIR)
 
 embedder: Embedder = Embedder()
-clf: Classifier = Classifier("models/lr.joblib")
+clf: Classifier = Classifier(config=config)
 dwell = LabelDwell()
 learning_gate = LearningGate()
 
 user_id: str = "test_user"
 
 
+# ------------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------------
+
 def _is_garbage(text: str) -> bool:
     """
-    Very small local filter to avoid learning from keyboard mash.
-    This does NOT affect classification, only learning.
+    Small local filter to avoid learning from keyboard mash.
+
+    This does NOT affect classification — only learning updates.
     """
-    if len(text) <= 2:
+
+    # Too short AND only punctuation → garbage
+    if len(text) <= 2 and all(c in string.punctuation for c in text):
         return True
-    if all(c in string.punctuation for c in text):
-        return True
-    return False
+
+    # Long punctuation spam
+    return len(text) > 2 and all(c in string.punctuation for c in text)
 
 
 def normalize_text(text: str) -> str:
@@ -47,8 +64,7 @@ def normalize_text(text: str) -> str:
     Lightweight semantic-preserving normalization.
     Applied BEFORE embedding.
     """
-    text = text.lower()
-    text = text.strip()
+    text = text.lower().strip()
 
     # collapse whitespace
     text = " ".join(text.split())
@@ -58,6 +74,10 @@ def normalize_text(text: str) -> str:
 
     return text
 
+
+# ------------------------------------------------------------------
+# Main Loop
+# ------------------------------------------------------------------
 
 def main() -> None:
     prev_action: SystemAction | None = None
@@ -84,13 +104,14 @@ def main() -> None:
         # ---- classification ----
         vec = embedder.encode(text)
         predicted, conf, activation = clf.predict(vec, user_id)
+
         dwell_label = dwell.apply(user_id, predicted, activation)
         final: Label = decide(dwell_label, conf)
 
         action: SystemAction = route(final)
 
         # ---- minimal playground affordance (UX only) ----
-        if final is SILENT:
+        if final == SILENT:
             print(f"[{final} | {conf:.2f}] → {NO_RESPONSE}")
             print("→ What would you like help with?")
         else:
@@ -119,7 +140,7 @@ def main() -> None:
                 now=now,
             )
         ):
-            delta = -0.05 if outcome is ESCALATED else 0.02
+            delta = -0.05 if outcome == ESCALATED else 0.02
             clf.update_bias(
                 user_id,
                 LABEL_TO_ID[prev_label],
@@ -127,7 +148,7 @@ def main() -> None:
             )
 
         # ---- persist periodically ----
-        if now - last_persist > 10:
+        if now - last_persist > PERSIST_INTERVAL_SECONDS:
             clf.persist()
             last_persist = now
 

@@ -7,14 +7,38 @@ packages = [{ include = "heimdall" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = "*"
-scikit-learn = "*"
-sentence-transformers = "*"
-joblib = "*"
+numpy = ">=1.21.4"
+scikit-learn = ">=1.0.2"
+sentence-transformers = ">=2.4.1"
+joblib = ">=1.1.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
+ruff = "^0.15.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["tests/results"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # import sorting
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "SIM", # simplify
+]
+
+ignore = [
+    "E501",  # line length handled separately
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

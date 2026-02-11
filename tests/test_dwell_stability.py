@@ -1,15 +1,25 @@
 # tests/test_dwell_stability.py
 
-from core.classifier import Classifier
-from core.embedder import Embedder
-from core.dwell import LabelDwell
-from core.decision import decide
-from core.types import REQUEST
+from pathlib import Path
+
+from heimdall.core.classifier import Classifier
+from heimdall.core.config import HeimdallConfig
+from heimdall.core.decision import decide
+from heimdall.core.dwell import LabelDwell
+from heimdall.core.embedder import Embedder
+from heimdall.core.types import REQUEST
 
 
-def test_request_does_not_break_on_acknowledgements_after_learning():
+def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Path):
+    """
+    Once a REQUEST intent stabilizes, lightweight acknowledgements
+    should not break the dwell state.
+    """
+
+    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+
     embedder = Embedder()
-    clf = Classifier("models/lr.joblib")
+    clf = Classifier(config=config)
     dwell = LabelDwell()
 
     user = "dwell_user"
@@ -29,15 +39,19 @@ def test_request_does_not_break_on_acknowledgements_after_learning():
 
     for text in sequence:
         vec = embedder.encode(text)
-        label, conf, act = clf.predict(vec, user)
-        label = decide(dwell.apply(user, label, act), conf)
-        labels.append(label)
+        predicted, conf, activation = clf.predict(vec, user)
 
-        print(f"{text!r} → {label}")
+        dwell_label = dwell.apply(user, predicted, activation)
+        final_label = decide(dwell_label, conf)
+
+        labels.append(final_label)
+
+        print(f"{text!r} → {final_label}")
 
     # Once REQUEST appears, it must persist
     assert REQUEST in labels
-    first_request = labels.index(REQUEST)
 
-    for l in labels[first_request:]:
-        assert l == REQUEST
+    first_request_index = labels.index(REQUEST)
+
+    for label in labels[first_request_index:]:
+        assert label == REQUEST

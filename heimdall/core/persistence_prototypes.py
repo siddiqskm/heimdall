@@ -1,18 +1,22 @@
 # core/persistence_prototypes.py
 
 import json
+from pathlib import Path
+
 import numpy as np
-from typing import Dict, List
 from numpy.typing import NDArray
 
-from core.types import Label
+from heimdall.core.types import Label
 
 EmbeddingVector = NDArray[np.float64]
+type PathLike = str | Path
 
 
-def load_prototypes(path: str) -> Dict[Label, List[EmbeddingVector]]:
+def load_prototypes(path: PathLike) -> dict[Label, list[EmbeddingVector]]:
+    path = Path(path)
+
     try:
-        with open(path, "r") as f:
+        with open(path) as f:
             raw = json.load(f)
         return {
             label: [np.array(v, dtype=np.float64) for v in vectors]
@@ -23,12 +27,15 @@ def load_prototypes(path: str) -> Dict[Label, List[EmbeddingVector]]:
 
 
 def save_prototypes(
-    path: str,
-    store: Dict[Label, List[EmbeddingVector]],
+    path: PathLike,
+    store: dict[Label, list[EmbeddingVector]],
 ) -> None:
     serializable = {
         label: [v.tolist() for v in vectors]
         for label, vectors in store.items()
     }
+    
+    path = Path(path)
+
     with open(path, "w") as f:
         json.dump(serializable, f)

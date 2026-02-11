@@ -1,16 +1,15 @@
 # core/learning_gate.py
 
-from typing import Optional
 import time
 
-from core.types import (
-    Label,
-    SystemAction,
-    Outcome,
-    REQUEST,
-    TOPIC_RESET,
+from heimdall.core.types import (
     ALLOW_PROGRESS,
     ESCALATED,
+    REQUEST,
+    TOPIC_RESET,
+    Label,
+    Outcome,
+    SystemAction,
 )
 
 
@@ -40,8 +39,8 @@ class LearningGate:
         confidence: float,
         stable_turns: int,
         action: SystemAction,
-        outcome: Optional[Outcome],
-        now: Optional[float] = None,
+        outcome: Outcome | None,
+        now: float | None = None,
     ) -> bool:
 
         now = now or time.time()

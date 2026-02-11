@@ -1,15 +1,26 @@
 # tests/test_online_learning_decay.py
 
-from core.classifier import Classifier
-from core.embedder import Embedder
-from core.dwell import LabelDwell
-from core.decision import decide
-from core.types import REQUEST
+from pathlib import Path
+
+from heimdall.core.classifier import Classifier
+from heimdall.core.config import HeimdallConfig
+from heimdall.core.decision import decide
+from heimdall.core.dwell import LabelDwell
+from heimdall.core.embedder import Embedder
+from heimdall.core.types import LABEL_TO_ID, REQUEST
 
 
-def test_online_learning_bias_decays_without_reinforcement() -> None:
+def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> None:
+    """
+    Verifies that:
+    1. Bias reinforcement increases confidence.
+    2. Bias decays over time without reinforcement.
+    """
+
+    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+
     embedder = Embedder()
-    clf = Classifier("models/lr.joblib")
+    clf = Classifier(config=config)
     dwell = LabelDwell()
 
     user = "decay_user"
@@ -20,18 +31,18 @@ def test_online_learning_bias_decays_without_reinforcement() -> None:
     # -------------------------
     # Step 1: baseline
     # -------------------------
-    label1, conf1, act1 = clf.predict(vec, user)
-    label1 = decide(dwell.apply(user, label1, act1), conf1)
+    predicted1, conf1, act1 = clf.predict(vec, user)
+    label1 = decide(dwell.apply(user, predicted1, act1), conf1)
 
-    print(f"[baseline] {label1=} {conf1=:.2f}")
+    print(f"[baseline] label={label1} conf={conf1:.2f}")
 
-    # We no longer assume SILENT
-    assert label1 == REQUEST or label1 is not None
+    # Do not assume initial class; only ensure valid label
+    assert label1 is not None
 
     # -------------------------
     # Step 2: reinforce REQUEST
     # -------------------------
-    request_index = clf.model.classes_.tolist().index(2)  # REQUEST
+    request_index = LABEL_TO_ID[REQUEST]
 
     for _ in range(8):
         clf.update_bias(
@@ -40,10 +51,10 @@ def test_online_learning_bias_decays_without_reinforcement() -> None:
             delta=0.04,
         )
 
-    label2, conf2, act2 = clf.predict(vec, user)
-    label2 = decide(dwell.apply(user, label2, act2), conf2)
+    predicted2, conf2, act2 = clf.predict(vec, user)
+    label2 = decide(dwell.apply(user, predicted2, act2), conf2)
 
-    print(f"[after learning] {label2=} {conf2=:.2f}")
+    print(f"[after learning] label={label2} conf={conf2:.2f}")
 
     assert label2 == REQUEST
     assert conf2 > conf1, (conf1, conf2)
@@ -54,10 +65,10 @@ def test_online_learning_bias_decays_without_reinforcement() -> None:
     for _ in range(40):
         clf._apply_decay(user)
 
-    label3, conf3, act3 = clf.predict(vec, user)
-    label3 = decide(dwell.apply(user, label3, act3), conf3)
+    predicted3, conf3, act3 = clf.predict(vec, user)
+    label3 = decide(dwell.apply(user, predicted3, act3), conf3)
 
-    print(f"[after decay] {label3=} {conf3=:.2f}")
+    print(f"[after decay] label={label3} conf={conf3:.2f}")
 
     # Confidence must fall back
     assert conf3 < conf2, (conf2, conf3)

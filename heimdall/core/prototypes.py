@@ -1,11 +1,10 @@
 # core/prototypes.py
 
-from typing import Dict, List, Tuple
+
 import numpy as np
 from numpy.typing import NDArray
 
-from core.types import Label
-
+from heimdall.core.types import Label
 
 # ---- types ----
 
@@ -32,14 +31,14 @@ def cosine_similarity(
 
 class PrototypeStore:
     def __init__(self, max_per_label: int) -> None:
-        self.store: Dict[Label, List[EmbeddingVector]] = {}
+        self.store: dict[Label, list[EmbeddingVector]] = {}
         self.max_per_label = max_per_label
 
     def match(
         self,
         vector: EmbeddingVector,
         threshold: float,
-    ) -> Tuple[Label | None, float]:
+    ) -> tuple[Label | None, float]:
         best_label: Label | None = None
         best_sim: float = 0.0
 

@@ -1,8 +1,8 @@
 # core/dwell.py
 
-from typing import Dict
-from core.types import Label
-from core.decision import CONF_THRESHOLD
+
+from heimdall.core.decision import CONF_THRESHOLD
+from heimdall.core.types import Label
 
 # ---- label constants (single source of truth) ----
 SILENT: Label = "SILENT"
@@ -27,18 +27,18 @@ class LabelDwell:
     HOSTILE_COOLDOWN: int = 2  # number of calm turns to recover
 
     def __init__(self) -> None:
-        self.last_label: Dict[str, Label] = {}
-        self.in_intent: Dict[str, bool] = {}
-        self.post_reset: Dict[str, bool] = {}
-        self.has_seen_intent: Dict[str, bool] = {}
+        self.last_label: dict[str, Label] = {}
+        self.in_intent: dict[str, bool] = {}
+        self.post_reset: dict[str, bool] = {}
+        self.has_seen_intent: dict[str, bool] = {}
 
         # ---- hostility (soft) ----
-        self.in_hostile: Dict[str, bool] = {}
-        self._hostile_cooldown: Dict[str, int] = {}
+        self.in_hostile: dict[str, bool] = {}
+        self._hostile_cooldown: dict[str, int] = {}
 
         # ---- stability tracking ----
-        self._stable_turns: Dict[str, int] = {}
-        self._stable_label: Dict[str, Label] = {}
+        self._stable_turns: dict[str, int] = {}
+        self._stable_label: dict[str, Label] = {}
 
     def stable_turns(self, user_id: str, label: Label) -> int:
         if self._stable_label.get(user_id) == label:
