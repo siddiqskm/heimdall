@@ -23,11 +23,11 @@ def load_offline_prototypes() -> dict[Label, list[EmbeddingVector]]:
     """
     Load immutable offline prototypes bundled with the package.
 
-    These are NOT runtime state and must not live in state_dir.
+    These are NOT runtime state.
     """
 
     proto_path: Traversable = files("heimdall").joinpath(
-        "state/prototypes_offline.json"
+        "assets/prototypes_offline.json"
     )
 
     with proto_path.open("r") as f:
@@ -36,13 +36,12 @@ def load_offline_prototypes() -> dict[Label, list[EmbeddingVector]]:
     result: dict[Label, list[EmbeddingVector]] = {}
 
     for key, vectors in raw.items():
-        # ---- TYPE NARROWING ----
         if key not in LABELS:
             raise ValueError(
                 f"Invalid label '{key}' in prototypes_offline.json"
             )
 
-        label: Label = key  # now safe — validated against LABELS
+        label: Label = key
 
         result[label] = [
             np.array(vec, dtype=np.float64)

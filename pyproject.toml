@@ -3,7 +3,16 @@ name = "heimdall"
 version = "0.1.0"
 description = "Conversation gatekeeper with dwell-based routing"
 authors = ["Siddiq Hussain"]
-packages = [{ include = "heimdall" }]
+
+packages = [
+    { include = "heimdall" }
+]
+
+# ---- Include non-Python assets in the wheel ----
+include = [
+    { path = "heimdall/models/lr.joblib", format = ["sdist", "wheel"] },
+    { path = "heimdall/assets/prototypes_offline.json", format = ["sdist", "wheel"] },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -19,6 +28,10 @@ ruff = "^0.15.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+# ------------------------------------------------------------------
+# Ruff configuration
+# ------------------------------------------------------------------
 
 [tool.ruff]
 line-length = 100
