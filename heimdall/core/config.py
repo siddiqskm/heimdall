@@ -18,15 +18,33 @@ class HeimdallConfig:
     models_dir: Path | None = None
     assets_dir: Path | None = None
 
-    # ---- thresholds ----
+    # ---- prototype thresholds ----
     session_proto_threshold: float = 0.75
     user_proto_threshold: float = 0.80
     offline_proto_threshold: float = 0.85
 
-    # ---- capacity limits ----
+    # ---- prototype limits ----
     session_proto_limit: int = 5
     user_proto_limit: int = 15
     offline_proto_limit: int = 50
+
+    # ------------------------------------------------------------------
+    # Score-based thresholds
+    # ------------------------------------------------------------------
+
+    hostile_threshold: float = 0.80
+    reset_threshold: float = 0.75
+    utility_silent_threshold: float = 0.40
+
+    # ------------------------------------------------------------------
+    # Score weights
+    # ------------------------------------------------------------------
+
+    drift_weight: float = 0.70
+
+    novelty_weight: float = 0.50
+    info_density_weight: float = 0.30
+    richness_weight: float = 0.20
 
     # ------------------------------------------------------------------
     # Runtime state paths (user-scoped)

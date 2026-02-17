@@ -1,4 +1,4 @@
-# core/prototypes.py
+# heimdall/core/prototypes.py
 
 
 import numpy as np

@@ -1,4 +1,4 @@
-# adapt/outcome.py
+# heimdall/adapt/outcome.py
 
 
 from heimdall.core.types import (

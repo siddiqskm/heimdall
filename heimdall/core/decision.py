@@ -1,4 +1,4 @@
-# core/decision.py
+# heimdall/core/decision.py
 
 from heimdall.core.types import REQUEST, SILENT, Label
 

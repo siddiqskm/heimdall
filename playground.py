@@ -85,7 +85,7 @@ def main() -> None:
 
         # ---- classification ----
         vec = embedder.encode(text)
-        predicted, conf, activation = clf.predict(vec, user_id)
+        predicted, conf, activation = clf.predict(vec, user_id, text=text)
 
         dwell_label = dwell.apply(user_id, predicted, activation)
         final: Label = decide(dwell_label, conf)

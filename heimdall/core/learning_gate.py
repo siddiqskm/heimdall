@@ -1,4 +1,4 @@
-# core/learning_gate.py
+# heimdall/core/learning_gate.py
 
 import time
 

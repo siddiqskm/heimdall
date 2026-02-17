@@ -1,4 +1,4 @@
-# core/types.py
+# heimdall/core/types.py
 
 from typing import Final, Literal
 

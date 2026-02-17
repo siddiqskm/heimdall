@@ -1,4 +1,4 @@
-# core/embedder.py
+# heimdall/core/embedder.py
 
 from sentence_transformers import SentenceTransformer
 

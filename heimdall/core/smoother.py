@@ -1,4 +1,4 @@
-# core/smoother.py
+# heimdall/core/smoother.py
 
 
 from heimdall.core.types import Label

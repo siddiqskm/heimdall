@@ -1,4 +1,4 @@
-# adapt/learner.py
+# heimdall/adapt/learner.py
 
 
 from heimdall.adapt.config import DECAY, MAX_BIAS, PENALTY, REWARD

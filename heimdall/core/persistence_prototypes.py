@@ -1,4 +1,4 @@
-# core/persistence_prototypes.py
+# heimdall/core/persistence_prototypes.py
 
 import json
 from pathlib import Path

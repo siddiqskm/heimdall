@@ -1,6 +1,9 @@
 # heimdall/core/classifier.py
 
+from collections.abc import Iterator
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -17,11 +20,14 @@ from heimdall.core.persistence_prototypes import (
     save_prototypes,
 )
 from heimdall.core.prototypes import PrototypeStore
+from heimdall.core.score_engine import ScoreEngine, Scores
 from heimdall.core.types import (
+    HOSTILE,
     ID_TO_LABEL,
     LABELS,
     REQUEST,
     SILENT,
+    TOPIC_RESET,
     Label,
 )
 
@@ -30,47 +36,58 @@ type EmbeddingVector = NDArray[np.float64]
 type BiasVector = NDArray[np.float64]
 
 
+# ==========================================================
+# Prediction Object (Backward Compatible)
+# ==========================================================
+
+@dataclass(frozen=True)
+class Prediction:
+    label: Label
+    confidence: float
+    activation: float
+    hostile_score: float
+    reset_score: float
+    utility_score: float
+
+    # backward compatibility: allow tuple unpacking
+    def __iter__(self) -> Iterator[Any]:
+        yield self.label
+        yield self.confidence
+        yield self.activation
+
+
+# ==========================================================
+# Classifier
+# ==========================================================
+
 class Classifier:
     def __init__(
         self,
         config: HeimdallConfig | None = None,
     ) -> None:
-        # ------------------------------------------------------------------
-        # Configuration
-        # ------------------------------------------------------------------
+
         self.config = config or default_config()
         self.config.ensure_dirs()
 
-        # ------------------------------------------------------------------
-        # Model (immutable, config-driven)
-        # ------------------------------------------------------------------
+        # ---- Model ----
         self.model = load_lr_model(self.config.lr_model_path)
         self._normalize_model()
 
-        # ------------------------------------------------------------------
-        # Runtime persistence paths (user-scoped state only)
-        # ------------------------------------------------------------------
+        # ---- Paths ----
         self.state_path: Path = self.config.user_delta_path
         self.proto_user_path: Path = self.config.user_prototypes_path
 
-        # ------------------------------------------------------------------
-        # Bias state
-        # ------------------------------------------------------------------
+        # ---- Bias ----
         self.user_delta: dict[UserID, BiasVector] = load_user_delta(
             self.state_path
         )
         self.num_labels: int = len(LABELS)
 
-        # ------------------------------------------------------------------
-        # Prototype tiers
-        # ------------------------------------------------------------------
-
-        # Session prototypes (ephemeral)
+        # ---- Prototypes ----
         self.session_prototypes = PrototypeStore(
             max_per_label=self.config.session_proto_limit
         )
 
-        # User prototypes (persisted per user)
         self.user_prototypes = PrototypeStore(
             max_per_label=self.config.user_proto_limit
         )
@@ -78,7 +95,6 @@ class Classifier:
             self.proto_user_path
         )
 
-        # Offline prototypes (immutable, package-scoped)
         self.offline_prototypes = PrototypeStore(
             max_per_label=self.config.offline_proto_limit
         )
@@ -86,9 +102,17 @@ class Classifier:
             self.config.offline_prototypes_path
         )
 
+        # ---- Score Engine ----
+        self._score_engine = ScoreEngine(self.config)
+
+        # ---- Context memory ----
+        self._recent_vectors: dict[UserID, list[EmbeddingVector]] = {}
+        self._max_recent: int = 20
+
     # ------------------------------------------------------------------
-    # Model compatibility hardening
+    # Model compatibility
     # ------------------------------------------------------------------
+
     def _normalize_model(self) -> None:
         if not hasattr(self.model, "predict_proba"):
             raise TypeError(
@@ -106,11 +130,15 @@ class Classifier:
             )
 
     # ------------------------------------------------------------------
-    # Internal helpers
+    # Helpers
     # ------------------------------------------------------------------
+
     def _init_user(self, user_id: UserID) -> None:
         if user_id not in self.user_delta:
             self.user_delta[user_id] = np.zeros(self.num_labels)
+
+        if user_id not in self._recent_vectors:
+            self._recent_vectors[user_id] = []
 
     def _apply_decay(self, user_id: UserID) -> None:
         self.user_delta[user_id] *= DECAY
@@ -118,49 +146,86 @@ class Classifier:
             np.abs(self.user_delta[user_id]) < 1e-4
         ] = 0.0
 
+    def _update_context(
+        self,
+        user_id: UserID,
+        vector: EmbeddingVector,
+    ) -> None:
+
+        self._recent_vectors[user_id].append(vector)
+
+        if len(self._recent_vectors[user_id]) > self._max_recent:
+            self._recent_vectors[user_id] = self._recent_vectors[user_id][
+                -self._max_recent :
+            ]
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
+
     def predict(
         self,
         vector: EmbeddingVector,
         user_id: UserID,
-    ) -> tuple[Label, float, float]:
-        """
-        Predict intent label.
+        text: str | None = None,
+    ) -> Prediction:
 
-        Returns:
-            (label, confidence, activation)
-        """
+        self._init_user(user_id)
 
         # --------------------------------------------------------------
-        # SESSION PROTOTYPES
+        # Compute Scores
         # --------------------------------------------------------------
+
+        scores: Scores = self._score_engine.compute(
+            vector=vector,
+            text=text or "",
+            recent_vectors=self._recent_vectors[user_id],
+            offline_prototypes=self.offline_prototypes,
+            user_prototypes=self.user_prototypes,
+            session_prototypes=self.session_prototypes,
+        )
+
+        # --------------------------------------------------------------
+        # ORIGINAL LR / PROTOTYPE LOGIC (Baseline)
+        # --------------------------------------------------------------
+
+        # --- Session prototypes ---
         proto_label, activation = self.session_prototypes.match(
             vector,
             threshold=self.config.session_proto_threshold,
         )
         if proto_label is not None:
-            return proto_label, activation, activation
+            self._update_context(user_id, vector)
+            return Prediction(
+                proto_label,
+                activation,
+                activation,
+                scores.hostile_score,
+                scores.reset_score,
+                scores.utility_score,
+            )
 
-        # --------------------------------------------------------------
-        # USER PROTOTYPES
-        # --------------------------------------------------------------
+        # --- User prototypes ---
         proto_label, activation = self.user_prototypes.match(
             vector,
             threshold=self.config.user_proto_threshold,
         )
         if proto_label is not None:
-            return proto_label, activation, activation
+            self._update_context(user_id, vector)
+            return Prediction(
+                proto_label,
+                activation,
+                activation,
+                scores.hostile_score,
+                scores.reset_score,
+                scores.utility_score,
+            )
 
-        # --------------------------------------------------------------
-        # LR FALLBACK
-        # --------------------------------------------------------------
+        # --- LR fallback ---
         probs: NDArray[np.float64] = (
             self.model.predict_proba([vector])[0]
         )
 
-        self._init_user(user_id)
         self._apply_decay(user_id)
 
         biased_probs = probs + self.user_delta[user_id]
@@ -168,28 +233,85 @@ class Classifier:
         biased_probs = biased_probs / biased_probs.sum()
 
         idx: int = int(np.argmax(biased_probs))
-        label: Label = ID_TO_LABEL[idx]
-        confidence: float = float(biased_probs[idx])
+        lr_label: Label = ID_TO_LABEL[idx]
+        lr_conf: float = float(biased_probs[idx])
 
-        # --------------------------------------------------------------
-        # OFFLINE PROTOTYPES (guarded override)
-        # --------------------------------------------------------------
+        # --- Offline prototypes override ---
         proto_label, activation = self.offline_prototypes.match(
             vector,
             threshold=self.config.offline_proto_threshold,
         )
 
-        # Do NOT allow SILENT to override active REQUEST
         if (
             proto_label is not None
             and not (
-                label == REQUEST
+                lr_label == REQUEST
                 and proto_label == SILENT
             )
         ):
-            return proto_label, activation, activation
+            self._update_context(user_id, vector)
+            return Prediction(
+                proto_label,
+                activation,
+                activation,
+                scores.hostile_score,
+                scores.reset_score,
+                scores.utility_score,
+            )
 
-        return label, confidence, confidence
+        # --------------------------------------------------------------
+        # SCORE-BASED LABEL DERIVATION (NEW LAYER)
+        # --------------------------------------------------------------
+
+        score_label: Label = lr_label
+        confidence: float = lr_conf
+
+        # 1. Hostile override (strongest)
+        if scores.hostile_score >= self.config.hostile_threshold:
+            score_label = HOSTILE
+            confidence = scores.hostile_score
+
+        # 2. Reset override (conservative)
+        elif scores.reset_score >= self.config.reset_threshold:
+            score_label = TOPIC_RESET
+            confidence = scores.reset_score
+
+        # --------------------------------------------------------------
+        # Drift Logging (diagnostic only)
+        # --------------------------------------------------------------
+
+        if score_label != lr_label:
+            print(
+                f"[Heimdall Drift] "
+                f"LR={lr_label} "
+                f"SCORE={score_label} | "
+                f"H={scores.hostile_score:.2f} "
+                f"R={scores.reset_score:.2f} "
+                f"U={scores.utility_score:.2f}"
+            )
+
+        # --------------------------------------------------------------
+        # Update Context
+        # --------------------------------------------------------------
+
+        self._update_context(user_id, vector)
+
+        # --------------------------------------------------------------
+        # Final Prediction
+        # --------------------------------------------------------------
+
+        return Prediction(
+            score_label,
+            confidence,
+            confidence,
+            scores.hostile_score,
+            scores.reset_score,
+            scores.utility_score,
+        )
+
+    # ------------------------------------------------------------------
+    # Existing methods unchanged
+    # ------------------------------------------------------------------
 
     def maybe_add_prototype(
         self,
@@ -231,3 +353,4 @@ class Classifier:
 
     def reset_user(self, user_id: str) -> None:
         self.user_delta.pop(user_id, None)
+        self._recent_vectors.pop(user_id, None)
