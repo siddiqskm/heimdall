@@ -1,0 +1,619 @@
+[
+  {
+    "conversation_id": "bst_4081",
+    "turns": [
+      {
+        "text": "I think one day I would love to have lots of children to watch them play together. Do you have kids?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I have many nieces who I love to spoil with presents and play with. I like buying them dresses as their fav colour is purple like me",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "How many children would you love to have?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I would like to have 5 however I think 2 is more achievable. I feel the news talks about how expensive it is these days",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "exactly! Do you find it hard to make paycheques last the month?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I know the feeling I also do that!",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_2896",
+    "turns": [
+      {
+        "text": "Technology for those with disabilities has come a long way",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "It can definitely help in otherwise difficult outdoor settings",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I've heard that they do over the years",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "what do you want to know?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I'm so sorry.  I'm 21 and about to gain 2 step children whom I love dearly.  Going to be a counselor",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "It is.  I'm in bible college.  Fiance is getting ordained as a law enforcement chaplain and i want to do le as well. it is",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_4420",
+    "turns": [
+      {
+        "text": "they said i had to replace it",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Im not really sure, i will be graduating in september so i am low on money",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I will phone them and ask for details on why it might be broken",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Not really, some Spanish but nothing extreme. I am from London. Where are you from?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Oh wow thats quite impressive",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Physics",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_2941",
+    "turns": [
+      {
+        "text": "yup! the next day my tire blew out also",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "i called a company to help me out. has your tire blown out before",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "thats good. do you like dogs",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "i especially love chihuahuas. do you have a favorite kind",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "labradors are really great! my second favorite",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "yes! very small compared to labs",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_1405",
+    "turns": [
+      {
+        "text": "Nice. What's your favorite kind?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "So you don't eat meat?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Ah! so do I. Could really use one right now",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "haha yes! I'd change that to a mashed potato though!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Oh brilliant! I haven't tried a proper baked potato in a while.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Sounds yum! oh i'm super hungry now!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Do you heat it for around 6 - 7 minutes in the microwave?",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_283",
+    "turns": [
+      {
+        "text": "Oh my, are you able to read?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "OK, well does it bother you that you are deaf?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I see. Yeah I can imagine how annoying it can be.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Right, at least you don't have the loud music blasting in your ears haha.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Reading is a great hobby to have! That is awesome to hear.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I agree. Have you ever thought of writing?",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_595",
+    "turns": [
+      {
+        "text": "I work at a music store.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yeah it's great to get free music and listen to it all day.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Jay-Z, J. Cole, Travis Scott are a few.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yeah at ACL. He's amazing.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Some electronica and Jazz. Grew up listening to Jazz with my Dad.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yes. I still have several of his.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_2627",
+    "turns": [
+      {
+        "text": "Yeah, it wasn't any fun. At least I wasn't hurt physically.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "No, just the truck.  The only thing that makes me angry is that it was not my fault. The other driver was not paying attention.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I'm sorry that happened to you-did you have any injuries-or any other issues?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Is that your favorite musician? Why were the cds coveted?  Can't  you replace them?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Do you like things other than music? What do you really like?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I used to play the saxophone.  Not well.  My kid loves music. I'm into snorkeling, myself.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_3525",
+    "turns": [
+      {
+        "text": "I also love watching cake decorating shows where they have them use odd ingredients or sculpt using things like pumpkin.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I don't it often but when I do always from scratch. I always like making things from nothing.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I tried to make frosting from scratch when I made some cupcakes for my coworker. Didn't go well and had to use store bought for it.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I need to look up some more recipes before my next attempt for sure.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I like everything about working around Christmas except for the the time it takes for me to be able to ignore the music. Too much repetition in songs.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "The worst is when they start the day after Halloween",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_3738",
+    "turns": [
+      {
+        "text": "I volunteer a lot and spend more time at home with my family.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I cook for a homeless shelter.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yeah. I have seen a lot of things. They love my food though",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "My favorite food is pasta so I share my love of it with them",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I love it too and it's an easy one to prepare",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I try to write but I seem to have a block lately",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_3477",
+    "turns": [
+      {
+        "text": "I feel bad about it but it was just once since i've been dieting.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Thanks I will, I like to draw and paint so that distracts my mind from dieting.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Always good to spend time with family, it's always so rewarding.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I have 3 siblings, we spend time together driving around in my four wheel drive truck.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Not bad at all, it's great fun. Especially when we take it in the mud!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I get that, have you finished up with college?",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_4713",
+    "turns": [
+      {
+        "text": "I believe in the right to bare arms. So I need to go see whats happening.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Always. I'd want to more scare an intruder then actually having to use it.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "And that is away it should be. It is all about protecting you & your family from possible threats.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "My husband wants to get those since I am usually home alone at night and we live out in the middle of no-where.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "I believe so to-Just looking for a good deal on those.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Oh we are planning on just buying a system and us install them ourself.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_3701",
+    "turns": [
+      {
+        "text": "so do you like working in groups?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yes I love it too. Do you dance?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "That's cool!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "That's cool! what kind of gaming?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "No. I have a baby girl so she takes up most of my time for games.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_1121",
+    "turns": [
+      {
+        "text": "I am not married but I love to read romance novels about people falling in love.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "It would be nice to be married since all the people in my books seem happy. Are you married?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Do you have a lot in common? If I got married I would like to find someone who shared my likes, such as my favorite color blue.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "It is good to have a lot in common. In my books, the characters usually have a lot in common.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Ye, I love to read. I also love to write books. What are your hobbies?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "That is wonderful. It i so healthy to eat those things. I would like to grow more.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_1162",
+    "turns": [
+      {
+        "text": "Have you seen three wheeler motorbikes?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Are the two wheels at the front?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Is that for stability or style?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "If you accelerate too fast, then I would suspect that the front one wheel would come off the road!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "But turning corners should be safer. What do you think?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Going up or down the slope? I think either way would be exhilarating!",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_3347",
+    "turns": [
+      {
+        "text": "i'm getting a xbox x",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "yep but i haven't brought one yet",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "your mom didn't tell you yet the easter bunny not real",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "That was the evil boogeymen",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "mom and dad can have you in there room\\",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "what about dad?",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_4416",
+    "turns": [
+      {
+        "text": "I know, it's so much nicer than having to go out and waste time in the store, who has time for that these days!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Right? Especially because I live in the middle of nowhere basically, the nearest store is like a 30 minute drive, yuck.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Well yes but I think it's worth it. I need to conserve my energy to help my growing baby. Only 3 months left until the big day.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "It's going to be a boy, and we're going to name him Zacharius. My parents think the name is silly, but I love it!",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Oh that's wonderful I love dogs. What breeds are they?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Ooh a very powerful breed, good choice!",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_8",
+    "turns": [
+      {
+        "text": "Tap is pretty odd compared to the others. My daughter loves ballet.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Yea, well keep it up, maybe one day you'll be on broadway.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "hahah that's funny. I believe in you though, you can overcome that.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "No I haven't, I don't watch movies very often. Im usually out at clubs people watching.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Probably not for a while. I just bought a new jaguar and I try to get out and just drive around and show it off as much as possible.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "Haha the car not the animal. A jaguar would eat me as I tried to feed it for sure.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "bst_371",
+    "turns": [
+      {
+        "text": "oh yeah. are you a student?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "ohh cool. i just graduated. whats your favorite sport?",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "mine is basketball.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "no no i am in a team. my dream is to play in an international game",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "yeah that is why i have completed my studies and do have job also.",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "yea i always do everything with plan 2.",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "synthetic_drift_001",
+    "turns": [
+      {
+        "text": "cool",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "awesome",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "nice",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "need help",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "jwt auth",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "refresh tokens",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "wow",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "lets switch gears",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "new topic",
+        "expected_label": "REQUEST"
+      }
+    ]
+  },
+  {
+    "conversation_id": "synthetic_hostility_001",
+    "turns": [
+      {
+        "text": "need help",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "jwt not working",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "this is confusing",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "what the hell",
+        "expected_label": "REQUEST"
+      },
+      {
+        "text": "wtf",
+        "expected_label": "HOSTILE"
+      }
+    ]
+  }
+]

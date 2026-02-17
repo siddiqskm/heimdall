@@ -7,16 +7,21 @@ from numpy.typing import NDArray
 
 from heimdall.adapt.config import DECAY, MAX_BIAS
 from heimdall.core.config import HeimdallConfig, default_config
-from heimdall.core.model_loader import load_lr_model, load_offline_prototypes
+from heimdall.core.model_loader import (
+    load_lr_model,
+    load_offline_prototypes,
+)
 from heimdall.core.persistence import load_user_delta, save_user_delta
-from heimdall.core.persistence_prototypes import load_prototypes, save_prototypes
+from heimdall.core.persistence_prototypes import (
+    load_prototypes,
+    save_prototypes,
+)
 from heimdall.core.prototypes import PrototypeStore
 from heimdall.core.types import (
     ID_TO_LABEL,
     LABELS,
     REQUEST,
     SILENT,
-    STEER,
     Label,
 )
 
@@ -37,9 +42,9 @@ class Classifier:
         self.config.ensure_dirs()
 
         # ------------------------------------------------------------------
-        # Model (immutable package asset)
+        # Model (immutable, config-driven)
         # ------------------------------------------------------------------
-        self.model = load_lr_model()
+        self.model = load_lr_model(self.config.lr_model_path)
         self._normalize_model()
 
         # ------------------------------------------------------------------
@@ -47,7 +52,6 @@ class Classifier:
         # ------------------------------------------------------------------
         self.state_path: Path = self.config.user_delta_path
         self.proto_user_path: Path = self.config.user_prototypes_path
-
 
         # ------------------------------------------------------------------
         # Bias state
@@ -61,7 +65,7 @@ class Classifier:
         # Prototype tiers
         # ------------------------------------------------------------------
 
-        # Session prototypes (ephemeral, cleared per session)
+        # Session prototypes (ephemeral)
         self.session_prototypes = PrototypeStore(
             max_per_label=self.config.session_proto_limit
         )
@@ -75,30 +79,22 @@ class Classifier:
         )
 
         # Offline prototypes (immutable, package-scoped)
-        # These are NOT runtime state and must never live in state_dir.
         self.offline_prototypes = PrototypeStore(
             max_per_label=self.config.offline_proto_limit
         )
-        self.offline_prototypes.store = load_offline_prototypes()
+        self.offline_prototypes.store = load_offline_prototypes(
+            self.config.offline_prototypes_path
+        )
 
     # ------------------------------------------------------------------
     # Model compatibility hardening
     # ------------------------------------------------------------------
     def _normalize_model(self) -> None:
-        """
-        Normalize sklearn LogisticRegression models that were pickled
-        under a newer sklearn version.
-
-        Avoids runtime crashes such as:
-        AttributeError: 'LogisticRegression' object has no attribute 'multi_class'
-        """
-
         if not hasattr(self.model, "predict_proba"):
             raise TypeError(
                 "Loaded model does not implement predict_proba()"
             )
 
-        # Compatibility shim for cross-version sklearn pickles
         if not hasattr(self.model, "multi_class"):
             try:
                 n_classes = len(self.model.classes_)
@@ -135,13 +131,10 @@ class Classifier:
 
         Returns:
             (label, confidence, activation)
-
-        Activation is used by dwell.
-        Confidence is used by decision gate.
         """
 
         # --------------------------------------------------------------
-        # SESSION PROTOTYPES (highest priority, always allowed)
+        # SESSION PROTOTYPES
         # --------------------------------------------------------------
         proto_label, activation = self.session_prototypes.match(
             vector,
@@ -151,7 +144,7 @@ class Classifier:
             return proto_label, activation, activation
 
         # --------------------------------------------------------------
-        # USER PROTOTYPES (soft prior)
+        # USER PROTOTYPES
         # --------------------------------------------------------------
         proto_label, activation = self.user_prototypes.match(
             vector,
@@ -161,7 +154,7 @@ class Classifier:
             return proto_label, activation, activation
 
         # --------------------------------------------------------------
-        # LR FALLBACK (core statistical intent)
+        # LR FALLBACK
         # --------------------------------------------------------------
         probs: NDArray[np.float64] = (
             self.model.predict_proba([vector])[0]
@@ -186,13 +179,12 @@ class Classifier:
             threshold=self.config.offline_proto_threshold,
         )
 
-        # IMPORTANT RULE:
-        # Do NOT allow STEER/SILENT to override an active REQUEST
+        # Do NOT allow SILENT to override active REQUEST
         if (
             proto_label is not None
             and not (
                 label == REQUEST
-                and proto_label in {STEER, SILENT}
+                and proto_label == SILENT
             )
         ):
             return proto_label, activation, activation
@@ -205,10 +197,6 @@ class Classifier:
         vector: EmbeddingVector,
         confidence: float,
     ) -> None:
-        """
-        Add prototypes based on confidence thresholds.
-        """
-
         if label == SILENT:
             return
 
@@ -224,10 +212,6 @@ class Classifier:
         label_index: int,
         delta: float,
     ) -> None:
-        """
-        Adjust per-user bias vector.
-        """
-
         self._init_user(user_id)
         self.user_delta[user_id][label_index] = np.clip(
             self.user_delta[user_id][label_index] + delta,
@@ -236,10 +220,6 @@ class Classifier:
         )
 
     def persist(self) -> None:
-        """
-        Persist user-scoped runtime state.
-        """
-
         save_user_delta(self.state_path, self.user_delta)
         save_prototypes(
             self.proto_user_path,
@@ -247,13 +227,7 @@ class Classifier:
         )
 
     def end_session(self) -> None:
-        """
-        Clear session-scoped prototypes.
-        """
         self.session_prototypes.clear()
 
     def reset_user(self, user_id: str) -> None:
-        """
-        Hard reset user bias (used in tests).
-        """
         self.user_delta.pop(user_id, None)

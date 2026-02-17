@@ -1,0 +1,285 @@
+# benchmarks/evaluate_stateful_gold_adversarial.py
+
+import json
+from collections import defaultdict
+from pathlib import Path
+from typing import TypedDict, cast
+
+from sentence_transformers import SentenceTransformer
+
+from heimdall.core.classifier import Classifier
+from heimdall.core.types import (
+    HOSTILE,
+    REQUEST,
+    SILENT,
+    TOPIC_RESET,
+    Label,
+)
+
+# ---------------------------
+# Config
+# ---------------------------
+
+VERSION = 1
+USER_ID = "__stateful_adversarial_eval__"
+
+
+# ---------------------------
+# Derived Gold Path
+# ---------------------------
+
+def build_gold_path() -> Path:
+    script_name = Path(__file__).resolve()
+    dataset_name = script_name.stem.replace("evaluate_", "")
+    filename = f"heimdall_{dataset_name}_v{VERSION}.json"
+    return script_name.parent / "data" / filename
+
+
+# ---------------------------
+# Schema
+# ---------------------------
+
+class SerializedTurn(TypedDict):
+    text: str
+    expected_label: str
+
+
+class SerializedConversation(TypedDict):
+    conversation_id: str
+    turns: list[SerializedTurn]
+
+
+class Turn(TypedDict):
+    text: str
+    expected_label: Label
+
+
+class Conversation(TypedDict):
+    conversation_id: str
+    turns: list[Turn]
+
+
+# ---------------------------
+# Loader
+# ---------------------------
+
+def load_gold() -> list[Conversation]:
+    gold_path = build_gold_path()
+
+    if not gold_path.exists():
+        raise FileNotFoundError(
+            f"Adversarial dataset not found at {gold_path}. "
+            "Run the builder first."
+        )
+
+    with gold_path.open(encoding="utf-8") as f:
+        raw = json.load(f)
+
+    conversations: list[Conversation] = []
+
+    for convo in cast(list[SerializedConversation], raw):
+        turns: list[Turn] = [
+            {
+                "text": t["text"],
+                "expected_label": cast(Label, t["expected_label"]),
+            }
+            for t in convo["turns"]
+        ]
+
+        conversations.append(
+            {
+                "conversation_id": convo["conversation_id"],
+                "turns": turns,
+            }
+        )
+
+    return conversations
+
+
+# ---------------------------
+# Evaluator
+# ---------------------------
+
+def main() -> None:
+    print("Loading adversarial dataset...")
+    conversations = load_gold()
+    print(f"Conversations: {len(conversations)}")
+
+    embedder = SentenceTransformer("all-MiniLM-L6-v2")
+    clf = Classifier()
+
+    total = 0
+    correct = 0
+
+    per_class_total: defaultdict[Label, int] = defaultdict(int)
+    per_class_correct: defaultdict[Label, int] = defaultdict(int)
+
+    confusion: defaultdict[Label, defaultdict[Label, int]] = defaultdict(
+        lambda: defaultdict(int)
+    )
+
+    # ---- stress diagnostics ----
+    hostile_detected = 0
+    silent_cluster_failures = 0
+
+    topic_reset_total = 0
+    topic_reset_correct = 0
+    topic_reset_streak_failures = 0
+    post_reset_failures = 0
+
+    for convo in conversations:
+        print(f"\n--- Conversation: {convo['conversation_id']} ---")
+
+        clf.reset_user(USER_ID)
+        clf.end_session()
+
+        prev_expected: Label | None = None
+        prev_pred: Label | None = None
+
+        for turn in convo["turns"]:
+            text = turn["text"]
+            expected = turn["expected_label"]
+
+            vector = embedder.encode(
+                text,
+                convert_to_numpy=True,
+                normalize_embeddings=False,
+            )
+
+            pred_label, confidence, _ = clf.predict(
+                vector,
+                USER_ID,
+            )
+
+            clf.maybe_add_prototype(pred_label, vector, confidence)
+
+            total += 1
+            per_class_total[expected] += 1
+            confusion[expected][pred_label] += 1
+
+            if pred_label == expected:
+                correct += 1
+                per_class_correct[expected] += 1
+
+            # ---- Hostile detection ----
+            if expected == HOSTILE and pred_label == HOSTILE:
+                hostile_detected += 1
+
+            # ---- Silent drift failure ----
+            if expected == SILENT and pred_label == REQUEST:
+                silent_cluster_failures += 1
+
+            # ---- Topic reset tracking ----
+            if expected == TOPIC_RESET:
+                topic_reset_total += 1
+                if pred_label == TOPIC_RESET:
+                    topic_reset_correct += 1
+
+            # ---- Reset streak stability ----
+            if (
+                prev_expected == TOPIC_RESET
+                and expected == TOPIC_RESET
+                and not (
+                    prev_pred == TOPIC_RESET
+                    and pred_label == TOPIC_RESET
+                )
+            ):
+                topic_reset_streak_failures += 1
+
+            # ---- Post-reset recovery ----
+            if (
+                prev_expected == TOPIC_RESET
+                and expected == REQUEST
+                and pred_label != REQUEST
+            ):
+                post_reset_failures += 1
+
+            print(
+                f"{text[:30]:30s} "
+                f"→ Pred: {pred_label:12s} "
+                f"Conf: {confidence:.3f}"
+            )
+
+            prev_expected = expected
+            prev_pred = pred_label
+
+    accuracy = correct / total if total else 0.0
+
+    print("\n=== ADVERSARIAL RESULTS ===")
+    print(f"Total turns: {total}")
+    print(f"Accuracy: {accuracy:.4f}")
+
+    print("\n=== PER-CLASS RECALL ===")
+    for label in sorted(per_class_total.keys()):
+        total_label = per_class_total[label]
+        correct_label = per_class_correct[label]
+        recall = correct_label / total_label if total_label else 0.0
+
+        print(
+            f"{label:12s} "
+            f"count={total_label:4d} "
+            f"recall={recall:.4f}"
+        )
+
+    print("\n=== CONFUSION MATRIX ===")
+    labels = sorted(per_class_total.keys())
+
+    header = " " * 12 + " ".join(f"{label:12s}" for label in labels)
+    print(header)
+
+    for true_label in labels:
+        row = f"{true_label:12s}"
+        for pred_label in labels:
+            row += f"{confusion[true_label][pred_label]:12d}"
+        print(row)
+
+    print("\n=== PER-CLASS METRICS ===")
+
+    for label in labels:
+        tp = confusion[label][label]
+
+        fp = sum(
+            confusion[other][label]
+            for other in labels
+            if other != label
+        )
+
+        fn = sum(
+            confusion[label][other]
+            for other in labels
+            if other != label
+        )
+
+        precision = tp / (tp + fp) if (tp + fp) else 0.0
+        recall = tp / (tp + fn) if (tp + fn) else 0.0
+        f1 = (
+            2 * precision * recall / (precision + recall)
+            if (precision + recall)
+            else 0.0
+        )
+
+        print(
+            f"{label:12s} "
+            f"precision={precision:.4f} "
+            f"recall={recall:.4f} "
+            f"f1={f1:.4f}"
+        )
+
+    print("\n=== RESET DIAGNOSTICS ===")
+    reset_accuracy = (
+        topic_reset_correct / topic_reset_total
+        if topic_reset_total
+        else 0.0
+    )
+
+    print(f"Topic reset accuracy: {topic_reset_correct}/{topic_reset_total} ({reset_accuracy:.4f})")
+    print(f"Reset streak failures: {topic_reset_streak_failures}")
+    print(f"Post-reset recovery failures: {post_reset_failures}")
+
+    print("\n=== OTHER STRESS SIGNALS ===")
+    print(f"Hostile correctly detected: {hostile_detected}")
+    print(f"Silent→Request false activations: {silent_cluster_failures}")
+
+
+if __name__ == "__main__":
+    main()

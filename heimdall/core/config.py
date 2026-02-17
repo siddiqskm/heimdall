@@ -9,13 +9,14 @@ class HeimdallConfig:
     """
     Runtime configuration for Heimdall.
 
-    Only `state_dir` is configurable.
-
-    All runtime filenames are canonical and enforced.
+    Only `state_dir` is required.
+    Assets and models are package-scoped by default,
+    but may be overridden.
     """
 
     state_dir: Path
     models_dir: Path | None = None
+    assets_dir: Path | None = None
 
     # ---- thresholds ----
     session_proto_threshold: float = 0.75
@@ -28,7 +29,7 @@ class HeimdallConfig:
     offline_proto_limit: int = 50
 
     # ------------------------------------------------------------------
-    # Canonical runtime paths (NOT configurable)
+    # Runtime state paths (user-scoped)
     # ------------------------------------------------------------------
 
     @property
@@ -38,6 +39,36 @@ class HeimdallConfig:
     @property
     def user_prototypes_path(self) -> Path:
         return self.state_dir / "prototypes_user.json"
+
+    # ------------------------------------------------------------------
+    # Package asset paths (immutable)
+    # ------------------------------------------------------------------
+
+    @property
+    def resolved_assets_dir(self) -> Path:
+        if self.assets_dir is not None:
+            return self.assets_dir
+
+        return Path(__file__).resolve().parent.parent / "assets"
+
+    @property
+    def offline_prototypes_path(self) -> Path:
+        return self.resolved_assets_dir / "prototypes_offline.json"
+
+    # ------------------------------------------------------------------
+    # Model paths
+    # ------------------------------------------------------------------
+
+    @property
+    def resolved_models_dir(self) -> Path:
+        if self.models_dir is not None:
+            return self.models_dir
+
+        return Path(__file__).resolve().parent.parent / "models"
+
+    @property
+    def lr_model_path(self) -> Path:
+        return self.resolved_models_dir / "lr.joblib"
 
     # ------------------------------------------------------------------
 

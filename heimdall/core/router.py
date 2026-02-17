@@ -2,14 +2,13 @@
 
 from collections.abc import Mapping
 
-from heimdall.core.types import Label, SystemAction
+from heimdall.core.types import HOSTILE, REQUEST, SILENT, TOPIC_RESET, Label, SystemAction
 
 _ROUTE_TABLE: Mapping[Label, SystemAction] = {
-    "SILENT": "NO_RESPONSE",
-    "STEER": "ACK_MINIMAL",
-    "REQUEST": "ALLOW_PROGRESS",
-    "TOPIC_RESET": "RESET_CONTEXT",
-    "HOSTILE": "SUPPRESS",
+    SILENT: "NO_RESPONSE",
+    REQUEST: "ALLOW_PROGRESS",
+    TOPIC_RESET: "RESET_CONTEXT",
+    HOSTILE: "SUPPRESS",
 }
 
 

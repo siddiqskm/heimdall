@@ -45,33 +45,16 @@ user_id: str = "test_user"
 # ------------------------------------------------------------------
 
 def _is_garbage(text: str) -> bool:
-    """
-    Small local filter to avoid learning from keyboard mash.
-
-    This does NOT affect classification — only learning updates.
-    """
-
-    # Too short AND only punctuation → garbage
     if len(text) <= 2 and all(c in string.punctuation for c in text):
         return True
 
-    # Long punctuation spam
     return len(text) > 2 and all(c in string.punctuation for c in text)
 
 
 def normalize_text(text: str) -> str:
-    """
-    Lightweight semantic-preserving normalization.
-    Applied BEFORE embedding.
-    """
     text = text.lower().strip()
-
-    # collapse whitespace
     text = " ".join(text.split())
-
-    # strip surrounding punctuation only
     text = text.strip(string.punctuation)
-
     return text
 
 
@@ -82,7 +65,6 @@ def normalize_text(text: str) -> str:
 def main() -> None:
     prev_action: SystemAction | None = None
     prev_label: Label | None = None
-    prev_time: float | None = None
 
     last_persist: float = time.time()
 
@@ -117,13 +99,12 @@ def main() -> None:
         else:
             print(f"[{final} | {conf:.2f}] → {action}")
 
-        # ---- outcome inference ----
+        # ---- outcome inference (updated) ----
         outcome: Outcome = NONE
-        if prev_action is not None and prev_time is not None:
+        if prev_label is not None:
             outcome = infer_outcome(
-                prev_action=prev_action,
                 next_input=text,
-                time_gap=now - prev_time,
+                confidence=conf,
             )
 
         # ---- learning gate (single authority) ----
@@ -154,7 +135,6 @@ def main() -> None:
 
         prev_action = action
         prev_label = final
-        prev_time = now
 
     clf.persist()
 

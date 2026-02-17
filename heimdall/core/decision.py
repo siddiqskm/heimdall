@@ -1,11 +1,8 @@
 # core/decision.py
 
-from heimdall.core.types import Label
+from heimdall.core.types import REQUEST, SILENT, Label
 
-# ---- label constants (runtime + typed) ----
-SILENT: Label = "SILENT"
-
-CONF_THRESHOLD: float = 0.30
+CONF_THRESHOLD: float = 0.38
 
 
 def decide(label: Label, confidence: float) -> Label:
@@ -14,9 +11,9 @@ def decide(label: Label, confidence: float) -> Label:
 
     Rules:
     - Only suppress SILENT predictions.
-    - Never downgrade REQUEST / STEER / HOSTILE / TOPIC_RESET.
+    - Never downgrade REQUEST / HOSTILE / TOPIC_RESET.
     """
     if label == SILENT and confidence < CONF_THRESHOLD:
-        return SILENT
+        return REQUEST
 
     return label

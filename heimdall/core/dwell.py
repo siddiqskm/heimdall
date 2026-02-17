@@ -6,7 +6,6 @@ from heimdall.core.types import Label
 
 # ---- label constants (single source of truth) ----
 SILENT: Label = "SILENT"
-STEER: Label = "STEER"
 REQUEST: Label = "REQUEST"
 TOPIC_RESET: Label = "TOPIC_RESET"
 HOSTILE: Label = "HOSTILE"
@@ -145,7 +144,7 @@ class LabelDwell:
                 self._update_stability(user_id, REQUEST)
                 return REQUEST
 
-            if predicted in {SILENT, STEER}:
+            if predicted in {SILENT}:
                 self._update_stability(user_id, self.last_label[user_id])
                 return self.last_label[user_id]
 

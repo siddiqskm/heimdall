@@ -1,0 +1,2000 @@
+[
+  {
+    "text": "Its is a very strong car and price must be little bit high as i suspect.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3740,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "It's okay. I've moved on to better choices anyway. Do you like motorcycles?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 663,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "No. But they served some amazing wine! It was pricey and delicious!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 144,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "I see, I like comedy movies because they tell a story in a fun way.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4335,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "What are your hobbies?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1624,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I'd like the name Jabberwocky, just because it was my and my dad's favorite poem we used to say together.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1446,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "i also want to see the cactus flowers, i think there is one that blooms every 100 years?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1321,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Wow, Drake is such a nice guy though!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 833,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "It is. Most of the time they don't even know exactly what they want.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4303,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I feel bad as my family doesn't know what I do. They think I'm in law school still!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 610,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "My family is from El Salvador?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3958,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "So interesting! How is your sister?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4331,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "That sounds great. Do you work nights a lot?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3197,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "red",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 514,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I think it's worth several thousand dollars.  I only paid $400 for it, though.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3459,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "yes current piercing trends are quite interesting",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2480,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "yes we have so much fun. Do u want kida?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 184,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "That's smart, but do they look nice?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 171,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "you are right but they have really good athletes",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 556,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Yes.  I really appreciate it.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1295,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Me too! It's funny how different those two shows are, but both so well done.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1374,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Its about 40 minutes away but its not a big city really. I dont need to buy things and im happy with myself without distractions. I dont need constant pleasures.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2961,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I'm kinda new to the surfing scene. What would you recommend?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3527,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Not full size pianos, no. But we do have keyboards that you can learn on!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 153,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "It is fun! Keeps me in great shape and helps me clear my mind. I highly recommend it! Hopefully you'll have more free time soon to try.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3288,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Yikes! I know how you feel. Since I'm the oldest, I'm expected to take care of everything. It's tough.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1177,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Country Music sounds great too, im sure you heard Dierk Bentley's \"Home\" record, right? I love Beyonce too, i have her latest album The Gift.Awesome body of work",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4183,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Yes he did.  Wonderful person.  And he was only 75.  Way too young.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3800,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Yes there are",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4099,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Yes. I was very interested in making train track configurations when I was young.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3193,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Lol, and I don't think he would approve of my reason.  I don't Zumba classes fall under the ok reason to leave work",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2465,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "oh yes its for my birthday",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1306,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "I needed something to keep me on task. I had to move back in with my parents after college.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2634,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I always found the stepmother interesting in Cinderella.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3453,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Violin solo. I've been learning since I was young",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1643,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "That is a great way to fail!  Glad to hear that he has a forever home now.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4733,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Oh dear, you are so sweet. Thank you very much",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 36,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "You're right.  One time her clipper slipped and poked me in the eye.  I ended up in the emergency room.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4440,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "I believe so to-Just looking for a good deal on those.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4713,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Yeah my son prefers it over wine so if we're kicking back that's what we're drinking for the night! Do you have any kids?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 953,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I have many nieces who I love to spoil with presents and play with. I like buying them dresses as their fav colour is purple like me",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4081,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "It's worth it, the Keto diet works.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2484,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Yes. There is lots to do here. However, we are concerned about Brexit. Are you aware of the situation?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2010,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Do you work? Are you happy with you current job?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1641,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I appreciate your honestly and feedback.  Thanks for being a good friend.  Being alone sometimes isn't so bad, right?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 927,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "I would love to able to have \\horses",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1275,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Sounds like my kind of place.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4467,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Many fruitarians don't eat them, but it can be hard for your body to digest many different vegetables.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1988,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I have one kitty. She is a pain, but I like her.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 608,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Ohh that sounds beautiful. Have you ever been married?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 550,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Well, they're supposed to be \"give aways\" for our patients anyways so they don't notice right away.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2236,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "do you bake the cakes also or its just decorating you do.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 575,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "All animals. Regular household pets to large mammals to zoo animals",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2116,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Thank goodness no. I think it's time to relocate somewhere tropical.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2030,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Sometimes I think I would like to be a seamstress. I could work at home and sew clothes all day. Blue clothes, since that's my favorite color!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3536,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Yeah, I've been feeling lonely lately, but it has helped a lot.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1562,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Wow i have to go sometime. What do you do on your spare time?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4720,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I personally don't see the point in preserving corpses but I think the practices are neat!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 253,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Definitely check out All This Time, Can't Stop, Passenger, and the whole DOL album. Just 3",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4262,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "oh that's super cool. And favorite country after france? I love the US and Canada. Loved my time in quebec in Canada, and LA in USA, cant pick a favorite",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2693,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Or anything really, I am constantly working on my rig. My two passions in life, chickens and truck driving",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3144,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I wish you luck! Better to be your own boss doing something you genuinely care about.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 744,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Cool. I'm studying philosophy at Mass.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2228,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I use games to relax after a stressful day, the small escape is relaxing.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 466,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "How old are you?  I should walk too but do not have the motivation yet.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3235,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Oh wow, unfortunately I don't think I have enough self control to change my diet.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1730,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Huh you sound like a really interesting person. Camping sounds so much fun!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3677,
+      "turn_id": 6
+    }
+  },
+  {
+    "text": "Well, I think I'll try to get it tracked by Samsung. Technology is amazing these days.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3618,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "I'm an office worker. You should try looking up tutorials or videos to learn. It saves on the amount of money you spend on food every week too.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2132,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "It was good",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3384,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "no",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1140,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "What kind of work do you do from home?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4118,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I think people get in a certain mindset and are just too stubborn to try and see that they might be wrong. We are all stubborn in some sense",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 408,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "I work at the campus library part-time. What about you?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 266,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Well, I just meant I am not a girl. I am a boy. What do you like then?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3871,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "that's great, what do you like about Paris?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1349,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Same here, we have 5 kids. So we have a big SUV and second 4-door sedan so we both use the app",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4524,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "well that's the deal when accepting a relationship. \"Your problems are mine now\" but also the joys, you may see the good stage if you manage to endure this.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1709,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Sounds like a deal, I'm horrible at doing taxes.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 472,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I like it because its such a thrill! When i went with my friends last time. What are some other things you like to do?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1375,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Whatever looks good really. I can't resist new meat substitute products.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 600,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I'm unemployed but lucky enough to have a trust fund. I haven't made up my mind on what I would like to do yet.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2237,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "I am very confident about my future.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1641,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "But then again, what if the reason is something I don't want to know. What if she done it to protect me?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2659,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Yes it is you would of thought we wouldn't see things like that in this day and age but it is still a huge problem.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3717,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "They are very friendly animals! not alot of people know or think that.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2150,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Oh, that's a delicate subject. But if someone doesn't like you because of your employment status then they're probably not the right person",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 971,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Yes it is, we should have called the police",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2181,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Me too",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2095,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "What informal education to you teach?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1243,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "It's a shame that you couldnt get the toe reattached!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3921,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "yeah but now im a vegan",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1577,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Sometimes, cousins can be closer than siblings.  I have one cousin who is one day older than me.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4102,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "I have been applying to a few places but no one has asked me for an interview.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3998,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "well just visit my grand parents, and give candy for children, what about you?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3790,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I've always wanted to run a marathon. I'm a sprinter but I need to work on endurance.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 420,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Well it's a long story, do you have time?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3566,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "I'm sure to, me and my wife are so pleased that he no longer depends on us so much",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3713,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "melody music i like very much",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1018,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "I love video games! You?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3132,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "The Razorbacks are a great team. I once visited the U of A before I decided on a university.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4258,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Oh, yes...but more like Word with Friends and Candy Crush, lol. I'd love to have any time to learn \"real\" games. ;)",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1446,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Thanks for understanding. Do you wear makeup?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 975,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "That does sound good. You sound like a good cook.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2710,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Where else do you go for taking pictures?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2233,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Sydney",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1594,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I bet you could. I think sometimes you just have to know the right people.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3743,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "That's not a bad idea. I'll have to look into it.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4024,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I work in sales. I work for a large department store. It's pretty great.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3263,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Have you tried their tacos?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1301,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "That sounds like a lovely setting and view.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4003,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Well, please try to be quick about it. My time is valuable and I don't need these types of frustrations.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1914,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I love golden retrievers. I rescued mine when he was just a puppy.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4498,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "And, no, it's like a religious cult or something. They're pretty tight lipped about it. Makes for good stand-up material.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4541,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "haha good point, it can be slow and boring a lot of the time. Its more fun to track and hunt a mammal",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 323,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "My mom was not the biggest fan, so she didn't teach me much but now I am learning that it can be fun",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1355,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "oh, i am so jealous! I have to drive 2 hours to my work and i hate it",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4805,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "Do you paint with oil?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 186,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Cool.  Did she dance professionally?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4709,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "It was about a boy and his dog.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1861,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Yes, very much so - i'm a fan of the simple life and getting away from a computer screen. What are you reading at the moment?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2359,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "i typically don't have many vegetables in my house. No one eats them",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1582,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "wow, what happened to the thought that life begins at 40?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 384,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "oh cool, but what about the fires and especially in the amazon and California",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1251,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Haha he must have a sweet tooth as well. Do you have a favorite candy?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3322,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "What kind of books do you like? I'm not into it.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4194,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Yea, he has alot and we really dont have room for them anymore.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1857,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "digital currency",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1261,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Sure.  I'm always looking for good vegetarian recipes.  I'm trying to be as healthy as possible, cutting way down on red meat.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3835,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I enjoy reading and working on my beadwork myself.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2927,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "i moved to Tennesee where i became friends with a neighbor who got me intol it",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2326,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I do think I will miss my mom but she will be fine she has tons of friends.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3759,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "oooo that sounds delicious. I should try that some time.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2690,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "He is called Loki",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 852,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "I've gotten used to basically sleeping while I'm standing up. How have you been?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1564,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I do not go a single day without cooking, I absolutely love it!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 833,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "oh nice",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1456,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Cats are OK, but you can't beat the loyalty of a husky.  And they're more snuggly than cats.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4356,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "Yes I agree. It is also a healthy activity.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3289,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "That's how I feel about soccer, drawing and reading asterix! My friend helped me feel better thoguh",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3160,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "I do weightlifting. But, I actually prefer calisthenics.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1552,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "We don't really stay up late unless it's football season.  Then we make the effort.  lol",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4368,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "I have a little pub named corky. im a dog mom",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3425,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "Yes, I really do its a rewarding job to have. Kids bring joy! do you have any children of your own?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2517,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "oh. a recluse are you?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3419,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "That's a awesome idea. Got any other pets? i think dragons are fantastic.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2349,
+      "turn_id": 2
+    }
+  },
+  {
+    "text": "I will. Ill have to take notes as well.",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2134,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Oh much more than that my friend!",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1299,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "i understand. how much are prices for couch?",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 826,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "He called me out in front of people and accused me of something I did not do",
+    "expected_label": "REQUEST",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2985,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Cool",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3162,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Thanks",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 463,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Yeah",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 429,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "nice",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 616,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "nice",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 635,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "yep",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 781,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "yeah",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2944,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1072,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "yeah",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3697,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 783,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "yeah",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1531,
+      "turn_id": 1
+    }
+  },
+  {
+    "text": "nice",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 2995,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "yeah",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 836,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1018,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "Yep",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3305,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "sure",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1117,
+      "turn_id": 6
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 356,
+      "turn_id": 4
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3268,
+      "turn_id": 0
+    }
+  },
+  {
+    "text": "Cool",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4259,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "thanks",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 3441,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "ok",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 4683,
+      "turn_id": 3
+    }
+  },
+  {
+    "text": "nice",
+    "expected_label": "SILENT",
+    "source": "blended_skill_talk",
+    "meta": {
+      "conversation_id": 1183,
+      "turn_id": 5
+    }
+  },
+  {
+    "text": "Ooof girl...I thought this was satire at first it was so cringe.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Did he say skinny wieners?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "But he is. He won’t talk to us. [NAME] damnit OP answer us!!",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": ">Emotions like this will get you killed. That is too bad, considering I was planning on living forever.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "It creates perverse incentives. Allow underpaid prison labour and suddenly you've an incentive towards exploiting your prison population rather than rehabilitating them.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Are you seriously this dumb?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "This is one of the worst written posts I've seen on this sub for a while",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Glad you answered your own question.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Last time i knew stealing posts from other people wasnt a rule",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yes. He was. Fuck off with your bullshit double standards.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yeah, but if they don't get the point, they go and try somewhere else... like say unpopular opinion maybe",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "So why did [NAME] leave? They were predictable and mostly tolerable. Three wings is absolutely intolerable. I hate him.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yep. Still don't know what you're talking about. Come back when you actually read the pdf and become informed.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "True or False, you post in /r/The_Donald ?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "5 is absolutely average. 6 would be kinda cute but nothing special. Kinda annoys me that so many people rate 5 as being lowkey ugly lol",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Lol kill me now",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "is the entire cast at least on there and not cut off at the bottom like the other pic I saw here?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Did I miss something? I don't think she's announced yet. Someone could still beat her to it.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Shit, I guess I accidentally bought a Pay-Per-View boxing match",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Don't be an asshole",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Pretty sure he's by far and away the biggest asshat on this sub lmao",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "AND THEY ARE REALLY ANNOYING WE MADE FIRST CONTACT 30 YEARS AGO AND THEY'RE STILL SENDING US TERRIBLE MINION MEMES",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "What do you mean by verified transactions?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Nah, you’re pretty fucked given the amount of weed you smoke and the fact you’re planning on finishing your 1.5 grams before the test.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Of course it was a huge hit for him. I hate people",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Of course. It would mean you owe them an unspecified favor in the future. That would be horrible.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I never will understand the reasoning behind puking in a toilet... Perfectly good bucket right there.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Doing nothing is the most tiring thing there is.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I don't know who that is",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I don't remember accurately but something in the lines of >and slightly leaning back so as to not be able to reach the remote",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Honestly tho. Please stop posting this. We've been seeing this shit since at least 2003 and I was born in 02 ffs",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "[NAME] was caught stealing his neighbors newspapers. He pockets all the money that is given to him and he does not use it effectively. [NAME] sad \"life\"",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I would smash both",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "deleted ^^^^^^^^^^^^^^^^0.1122 ^^^What ^^^is ^^^this?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Fuck it, it's every man/woman for themselves in this fucked City. I've given up caring.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Stranger than fiction. Can't even begin to comprehend what that poor [NAME] was going through.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "It does infuriate me.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I don’t see the MAGA hat kid working to undermine civil liberty. It’s at least understandable to react violently to tyrants.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "No wonder crime is going up if these morons are in charge.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I fucking hate [NAME]",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yeah I meant to say the purpose ofnbeing an independent is \"so one can remain annoyingly aloof about primaries and then vote any way in the general\"",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I'm not sure what that is",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "link to the crack tweet?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "No surprise there. It was always his policy to table it upon the deal's failure in Parliament as was set out at the Labour conference.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Maybe? I was def too busy going “ohmygawd motherfucking KING SHARK!?! 🦈 “ to notice",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I don't understand why [NAME] is starting it on the feet..",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "It's amazing how people will tell you not to go for something, but then are the same ones who can't go 2 minutes without it.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "The bourgeoisie elected courts were going to backtrack on all [NAME] economic reforms. Fuck those guys.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yeah I have no sympathy for them.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "No idea, maybe say nothing..............",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Ugh, me too.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "You suck at trolling. It's way too obvious.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Nothing about that looks comfortable",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I've always hated the 610/45 interchange. Everyone slows to a crawl when there is no need to slow down.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I thought chiropractors were bad! Look as these medical doctors who were pushing opiates on their patients by the thousands!",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "The game is riddled with error messages.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Yep, it's all extremely frustrating.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Mother’s Day is the worst.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I don’t give a F F the haters F all the haters Much love, no hate Machines within, machines within",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "“That’s up to you” Clearly it is not up to you, or you wouldn’t have had a flipping miscarriage!",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": ">more money than you I seriously, *seriously* doubt that. >doing something before this guys are outta the country Prove it.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Funny how artificial famines are genocide when the Brits do it, but not when it's the Soviets.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": ">so it doesn't seem like I'm a ~~whimp~~ wimp If someone actually says that to you, they're the wimp not you.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "it really sucks how absolutely fucked some of us got genetically in the chest department",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I would say. ’good’ but it’s all fucking tragic.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "I’m going to say it. Those films are mostly over rated. Boring same old tame CGI stuff every time.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "And also, turning someone's hands into spaghetti is cruel and inhumane and not a reasonable punishment for theft.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "How can you be so stupid... it’s called climate change, there is so much research on it. It’s just blindly denying science..",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "he dribbles softly and loosely I dont understand why nobody has fixed it.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "NL West had 3 teams in the playoffs in 2017 and 2 in 2018......wtf you on about",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "*what the fuck*",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Typically the speeches come from a functional adult. The Idiot is an unindicted co-conspirator with a visible personality disorder. Feigning normalcy is part of what's wrong.",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "hahahaha yeah you tell him man! fuk da police coming straight from da undagrunnn hahahah just like that song right!",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "How did they not know internets is a point reward in 4chan?",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  },
+  {
+    "text": "Happened this afternoon, January 21, 2019 in the Central South-East area. So frustrating!",
+    "expected_label": "REQUEST",
+    "source": "go_emotions",
+    "meta": {}
+  }
+]

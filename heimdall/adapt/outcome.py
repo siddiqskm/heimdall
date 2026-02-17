@@ -2,25 +2,22 @@
 
 
 from heimdall.core.types import (
-    ACK_MINIMAL,
     CONTINUED,
     ESCALATED,
     NONE,
     Outcome,
-    SystemAction,
 )
 
 
 def infer_outcome(
-    prev_action: SystemAction,
+    confidence: float,
     next_input: str | None,
-    time_gap: float,
 ) -> Outcome:
     if next_input is None:
         return NONE
 
     # user escalated after minimal acknowledgement
-    if len(next_input) > 20 and prev_action == ACK_MINIMAL:
+    if confidence < 0.4 and len(next_input) > 20:
         return ESCALATED
 
     return CONTINUED

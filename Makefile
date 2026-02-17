@@ -1,4 +1,4 @@
-.PHONY: lint lint-fix format test test-strict check check-strict
+.PHONY: lint lint-fix format test test-strict-quite test-strict check check-strict
 
 lint:
 	poetry run ruff check .
@@ -13,9 +13,13 @@ format:
 test:
 	poetry run pytest -q
 
+# Stop at first failure in quite mode
+test-strict-quite:
+	poetry run pytest -q --maxfail=1
+
 # Stop at first failure
 test-strict:
-	poetry run pytest -q --maxfail=1
+	poetry run pytest --maxfail=1
 
 # Lint + normal test
 check: lint test

@@ -153,7 +153,7 @@ def test_real_long_conversation(tmp_path: Path):
         ("wtf", HOSTILE),
         ("im done", HOSTILE),
         ("leave me alone", HOSTILE),
-        ("shut up", SILENT),
+        ("shut up", HOSTILE),
     ]
 
     assert len(CHAT) == 100  # enforce contract
