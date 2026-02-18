@@ -5,6 +5,18 @@ description = "Conversation gatekeeper with dwell-based routing"
 authors = ["Siddiq Hussain"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/siddiqskm/heimdall"
+homepage = "https://github.com/siddiqskm/heimdall"
+documentation = "https://github.com/siddiqskm/heimdall#readme"
+keywords = ["nlp", "conversation", "intent-classification", "routing", "sentence-transformers"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 
 packages = [
     { include = "heimdall" }

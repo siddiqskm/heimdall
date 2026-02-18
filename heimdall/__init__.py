@@ -1,7 +1,52 @@
 # heimdall/__init__.py
+#
+# Public API: import only from this top level, e.g.
+#   from heimdall import Classifier, LabelDwell, Embedder, decide, route, HeimdallConfig
+#   from heimdall import REQUEST, HOSTILE, SILENT, TOPIC_RESET, Label, SystemAction, Prediction
 
 import logging
 from pathlib import Path
+
+from heimdall.core.classifier import Classifier, Prediction
+from heimdall.core.config import HeimdallConfig, default_config
+from heimdall.core.decision import decide
+from heimdall.core.dwell import LabelDwell
+from heimdall.core.embedder import Embedder
+from heimdall.core.router import route
+from heimdall.core.types import (
+    ALLOW_PROGRESS,
+    HOSTILE,
+    NO_RESPONSE,
+    REQUEST,
+    RESET_CONTEXT,
+    SILENT,
+    SUPPRESS,
+    TOPIC_RESET,
+    Label,
+    SystemAction,
+)
+
+__all__ = [
+    "ALLOW_PROGRESS",
+    "Classifier",
+    "LabelDwell",
+    "Embedder",
+    "HeimdallConfig",
+    "Prediction",
+    "HOSTILE",
+    "Label",
+    "NO_RESPONSE",
+    "REQUEST",
+    "RESET_CONTEXT",
+    "SILENT",
+    "SUPPRESS",
+    "SystemAction",
+    "TOPIC_RESET",
+    "decide",
+    "default_config",
+    "route",
+    "configure_logging",
+]
 
 # Prevent "no handler" warnings when the package is used without configuring logging.
 # Applications that want output should call configure_logging() once.

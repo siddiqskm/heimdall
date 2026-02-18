@@ -61,20 +61,24 @@ Requires **Python 3.12**. The package ships with a pre-trained LR model and offl
 
 ### As a library
 
+Import only from the top level — do not use `heimdall.core.*` or other internal modules.
+
 State and learning are **per chat**: one `Classifier` and one `LabelDwell` per chat. Omit `chat_id` for a new chat; pass `chat_id` to resume an existing one.
 
 ```python
 from pathlib import Path
-import heimdall
-from heimdall.core.config import HeimdallConfig
-from heimdall.core.classifier import Classifier
-from heimdall.core.decision import decide
-from heimdall.core.dwell import LabelDwell
-from heimdall.core.embedder import Embedder
-from heimdall.core.router import route
+from heimdall import (
+    Classifier,
+    Embedder,
+    HeimdallConfig,
+    LabelDwell,
+    decide,
+    route,
+    configure_logging,
+)
 
 # Optional: enable log output (default is no output)
-heimdall.configure_logging()
+configure_logging()
 
 config = HeimdallConfig(state_dir=Path("~/.heimdall").expanduser())
 embedder = Embedder()
@@ -291,6 +295,17 @@ heimdall/
 ├── pyproject.toml
 └── Makefile
 ```
+
+---
+
+## Publishing (GitHub & PyPI)
+
+1. **Heimdall repo:** [github.com/siddiqskm/heimdall](https://github.com/siddiqskm/heimdall) (or create and push this project).
+2. **Build and publish** (optional, for PyPI):
+   ```bash
+   poetry build
+   # then: poetry publish (or upload to PyPI with twine)
+   ```
 
 ---
 

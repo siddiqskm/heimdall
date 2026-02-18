@@ -13,19 +13,19 @@ Run from repo root: poetry run python examples/gatekeeper_bot.py
 import logging
 from pathlib import Path
 
-import heimdall
-from heimdall.core.classifier import Classifier
-from heimdall.core.config import HeimdallConfig
-from heimdall.core.decision import decide
-from heimdall.core.dwell import LabelDwell
-from heimdall.core.embedder import Embedder
-from heimdall.core.router import route
-from heimdall.core.types import (
+from heimdall import (
     ALLOW_PROGRESS,
+    Classifier,
+    Embedder,
+    HeimdallConfig,
+    LabelDwell,
     NO_RESPONSE,
     RESET_CONTEXT,
     SUPPRESS,
     SystemAction,
+    decide,
+    route,
+    configure_logging,
 )
 
 # ---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ from heimdall.core.types import (
 
 STATE_DIR = Path(__file__).resolve().parent.parent / ".heimdall"
 config = HeimdallConfig(state_dir=STATE_DIR)
-heimdall.configure_logging(level=logging.INFO)
+configure_logging(level=logging.INFO)
 
 embedder = Embedder()
 clf = Classifier(config=config)
