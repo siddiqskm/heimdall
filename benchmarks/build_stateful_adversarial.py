@@ -1,4 +1,4 @@
-# benchmarks/build_stateful_gold_adversarial.py
+# benchmarks/build_stateful_adversarial.py
 
 import json
 import random

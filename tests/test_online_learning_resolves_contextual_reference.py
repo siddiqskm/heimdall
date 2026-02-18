@@ -19,7 +19,7 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
     for an ambiguous phrase — regardless of its initial label.
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

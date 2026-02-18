@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def test_classifier_resume_new_instance(tmp_path: Path) -> None:
     """2.1: New Classifier with same chat_id loads bias/prototypes; predictions reflect them."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     embedder = Embedder()
     text = "help with backend"
     vec = embedder.encode(text)
@@ -34,7 +34,7 @@ def test_classifier_resume_new_instance(tmp_path: Path) -> None:
 
 def test_classifier_resume_same_process(tmp_path: Path) -> None:
     """2.2: Two instances same chat_id in same process; second sees first's persisted state."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     embedder = Embedder()
     vec = embedder.encode("auth system")
 
@@ -49,7 +49,7 @@ def test_classifier_resume_same_process(tmp_path: Path) -> None:
 
 def test_dwell_resume(tmp_path: Path) -> None:
     """2.3: New LabelDwell with same chat_id loads FSM state (e.g. INTENT)."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     dwell1 = LabelDwell(config=config, chat_id="resume_dwell")
     dwell1.apply(REQUEST, 0.85)
     dwell1.apply(REQUEST, 0.8)

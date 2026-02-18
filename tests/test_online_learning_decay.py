@@ -20,7 +20,7 @@ def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> No
     2. Bias decays over time without reinforcement.
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

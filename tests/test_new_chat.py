@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def test_new_chat_generates_id(tmp_path: Path) -> None:
     """3.1: Classifier() and Classifier(chat_id=None) get non-empty chat_id; two instances differ."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf1 = Classifier(config=config)
     clf2 = Classifier(config=config)
     clf3 = Classifier(config=config, chat_id=None)
@@ -32,7 +32,7 @@ def test_new_chat_generates_id(tmp_path: Path) -> None:
 
 def test_new_chat_unused_id_fresh_state(tmp_path: Path) -> None:
     """3.2: Classifier/Dwell with brand-new chat_id have zero bias and IDLE."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf = Classifier(config=config, chat_id="brand_new_123")
     assert (clf._bias == 0).all()
     assert len(clf.user_prototypes.store) == 0
@@ -46,7 +46,7 @@ def test_new_chat_unused_id_fresh_state(tmp_path: Path) -> None:
 
 def test_reset_chat_clears_and_persists(tmp_path: Path) -> None:
     """3.3: reset_chat() clears in-memory and on-disk state; new instance loads reset state."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf = Classifier(config=config, chat_id="reset_me")
     clf.update_bias(LABEL_TO_ID[REQUEST], 0.1)
     clf.persist()

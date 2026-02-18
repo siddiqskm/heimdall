@@ -58,7 +58,7 @@ def test_baseline(tmp_path: Path) -> None:
     Baseline behavioral contract for core classification + dwell + decision.
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

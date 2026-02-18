@@ -88,7 +88,7 @@ def test_realistic_conversation_flow(tmp_path: Path) -> None:
     - Hostility override behavior
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

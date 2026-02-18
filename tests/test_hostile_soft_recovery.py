@@ -22,7 +22,7 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     4. Productive intent eventually recovers
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

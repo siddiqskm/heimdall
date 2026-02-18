@@ -10,9 +10,9 @@ class HeimdallConfig:
     """
     Runtime configuration for Heimdall.
 
-    Only `state_dir` is required.
-    Assets and models are package-scoped by default,
-    but may be overridden.
+    Only `state_dir` is required. Per-chat state is stored under state_dir/chats/{chat_id}/.
+    Default is ~/.heimdall (use default_config()); pass any path to override (e.g. .playground_state).
+    Assets and models are package-scoped by default, but may be overridden.
     """
 
     state_dir: Path

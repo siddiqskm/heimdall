@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def test_one_blob_per_chat_id_classifier(tmp_path: Path) -> None:
     """1.1: Two different chat_ids produce two directories with delta.json and prototypes.json."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf_a = Classifier(config=config, chat_id="chat_a")
     clf_b = Classifier(config=config, chat_id="chat_b")
     clf_a.persist()
@@ -35,7 +35,7 @@ def test_one_blob_per_chat_id_classifier(tmp_path: Path) -> None:
 
 def test_one_blob_per_chat_id_dwell(tmp_path: Path) -> None:
     """1.2: Two LabelDwell instances (different chat_ids) each persist only to their own chat_dir."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     dwell_a = LabelDwell(config=config, chat_id="dwell_a")
     dwell_b = LabelDwell(config=config, chat_id="dwell_b")
     dwell_a.apply(REQUEST, 0.9)  # move to INTENT
@@ -58,7 +58,7 @@ def test_one_blob_per_chat_id_dwell(tmp_path: Path) -> None:
 
 def test_caller_persists_when_they_want(tmp_path: Path) -> None:
     """1.3: After update_bias / maybe_add_prototype and persist(), chat dir reflects updates."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf = Classifier(config=config, chat_id="persist_me")
     clf.update_bias(LABEL_TO_ID[REQUEST], 0.1)
     embedder = Embedder()
@@ -82,7 +82,7 @@ def test_caller_persists_when_they_want(tmp_path: Path) -> None:
 
 def test_delete_when_chat_closed(tmp_path: Path) -> None:
     """1.4: After delete_chat_state(), chat dir is gone; new instance loads fresh state."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     clf = Classifier(config=config, chat_id="to_delete")
     clf.update_bias(LABEL_TO_ID[REQUEST], 0.05)
     clf.persist()
@@ -103,7 +103,7 @@ def test_delete_when_chat_closed(tmp_path: Path) -> None:
 
 def test_delete_idempotent(tmp_path: Path) -> None:
     """1.5: Calling delete_chat_state again for same chat_id does not raise; dir remains absent."""
-    config = HeimdallConfig(state_dir=tmp_path / "state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
     config.delete_chat_state("nonexistent")
     config.delete_chat_state("nonexistent")
     assert not config.chat_dir("nonexistent").exists()

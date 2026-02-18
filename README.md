@@ -27,7 +27,7 @@ Those labels are turned into **system actions**:
 | TOPIC_RESET   | `RESET_CONTEXT` |
 | HOSTILE       | `SUPPRESS`      |
 
-A stateful **dwell** layer keeps intent stable (e.g. “cool” in the middle of a request stays REQUEST), handles hostility (cooldown, recovery), and decays intent on silent streaks. Optional **learning** updates per-user bias and prototypes from outcomes.
+A stateful **dwell** layer keeps intent stable (e.g. “cool” in the middle of a request stays REQUEST), handles hostility (cooldown, recovery), and decays intent on silent streaks. Optional **learning** updates per-chat bias and prototypes from outcomes.
 
 ---
 
@@ -38,7 +38,7 @@ text → Embedder → Classifier (LR + prototypes + scores) → LabelDwell (FSM)
 ```
 
 - **Embedder**: sentence-transformers `all-MiniLM-L6-v2`, normalised embeddings.
-- **Classifier**: LR model + per-user bias (with decay), session/user/offline prototype stores, score engine (hostile / reset / utility) that can override the LR label.
+- **Classifier**: LR model + per-chat bias (with decay), session/user/offline prototype stores, score engine (hostile / reset / utility) that can override the LR label.
 - **LabelDwell**: FSM (IDLE, INTENT, HOSTILE, POST_RESET) for continuity and hostility handling.
 - **decide**: Final confidence gate (e.g. low-confidence SILENT → REQUEST).
 - **route**: Label → system action.
@@ -61,6 +61,8 @@ Requires **Python 3.12**. The package ships with a pre-trained LR model and offl
 
 ### As a library
 
+State and learning are **per chat**: one `Classifier` and one `LabelDwell` per chat. Omit `chat_id` for a new chat; pass `chat_id` to resume an existing one.
+
 ```python
 from pathlib import Path
 import heimdall
@@ -76,17 +78,19 @@ heimdall.configure_logging()
 
 config = HeimdallConfig(state_dir=Path("~/.heimdall").expanduser())
 embedder = Embedder()
-clf = Classifier(config=config)
-dwell = LabelDwell(config=config)
+clf = Classifier(config=config)                    # new chat (generates chat_id)
+dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
-user_id = "your_user_id"
 text = "lets build an auth system"
 vec = embedder.encode(text)
-predicted, confidence, activation = clf.predict(vec, user_id)
-dwell_label = dwell.apply(user_id, predicted, activation)
-final_label = decide(dwell_label, confidence, confidence_threshold=config.confidence_threshold)
+pred = clf.predict(vec, text=text)
+dwell_label = dwell.apply(pred.label, pred.activation)
+final_label = decide(dwell_label, pred.confidence, confidence_threshold=config.confidence_threshold)
 action = route(final_label)
 # action is one of: NO_RESPONSE, ALLOW_PROGRESS, RESET_CONTEXT, SUPPRESS
+
+# To resume a chat later: clf = Classifier(config=config, chat_id=existing_chat_id)
+# To delete chat state when chat is closed: config.delete_chat_state(chat_id)
 ```
 
 ### Playground script
@@ -111,7 +115,9 @@ poetry run python examples/gatekeeper_bot.py
 
 ## Configuration
 
-Only `state_dir` is required; everything else has defaults.
+Only `state_dir` is required; everything else has defaults. Per-chat state is stored under `state_dir/chats/{chat_id}/`.
+
+**Default:** `default_config()` uses `~/.heimdall`. You can pass any directory to override (e.g. `.playground_state` for the playground, or a path under your app).
 
 ```python
 from pathlib import Path
@@ -120,14 +126,17 @@ from heimdall.core.config import HeimdallConfig, default_config
 # Default: ~/.heimdall
 config = default_config()
 
-# Or explicit
-config = HeimdallConfig(state_dir=Path("/path/to/state"))
+# Or explicit (e.g. playground uses .playground_state)
+config = HeimdallConfig(state_dir=Path(".playground_state"))
 ```
 
-Under `state_dir` the package uses:
+Under `state_dir` the package keeps **one directory per chat**: `state_dir/chats/{chat_id}/` with:
 
-- `user_delta.json` – per-user bias for the LR classifier
-- `prototypes_user.json` – user-level prototypes
+- `delta.json` – bias vector for the LR classifier
+- `prototypes.json` – user prototypes for this chat
+- `dwell.json` – FSM state (when using LabelDwell with config)
+
+Call `config.delete_chat_state(chat_id)` when a chat is closed so state is not kept forever (caller or a job is responsible).
 
 Key options (see `HeimdallConfig` in `heimdall/core/config.py`):
 
@@ -208,15 +217,37 @@ make format    # ruff format
 
 ## Training and data
 
-Bootstrap training produces the LR model and offline prototypes used by the classifier:
+Bootstrap training produces the LR model and offline prototypes used by the classifier.
+
+### Running the trainer
+
+From the repo root:
 
 ```bash
-poetry run python training/train_bootstrap.py --models-dir ./models --state-dir ./state
+poetry run python training/train_bootstrap.py --models-dir ./heimdall/models
 ```
 
-- **Labels** come from the built-in `DATA` list in `training/train_bootstrap.py` (curated `(text, label)` pairs for SILENT, REQUEST, TOPIC_RESET, HOSTILE).
-- Uses the same embedder as runtime; trains sklearn `LogisticRegression` and writes `lr.joblib` and state under the given dirs.
-- To add your own data: extend the `DATA` list in that script (or load your own list of `(text, Label)` tuples) and re-run. See [docs/DATA_AND_TRAINING.md](docs/DATA_AND_TRAINING.md) for more detail.
+**Arguments:**
+
+| Argument        | Default            | Description |
+|----------------|--------------------|-------------|
+| `--models-dir` | `heimdall/models`  | Directory where the trained LR model is written. |
+
+**What it does:**
+
+1. Loads the same embedder as runtime (`sentence-transformers/all-MiniLM-L6-v2`).
+2. Encodes all `(text, label)` pairs from the built-in **DATA** list in `training/train_bootstrap.py`.
+3. Trains a sklearn **LogisticRegression** classifier on the embeddings.
+4. Writes **`lr.joblib`** to `{models-dir}/lr.joblib` (e.g. `./heimdall/models/lr.joblib`).
+5. Builds **offline prototypes** from the same DATA and writes **`prototypes_offline.json`** to the package `heimdall/assets/` directory (used at runtime for prototype-based scoring).
+
+After training, the package will use the new `lr.joblib` when `models_dir` points at that directory (or when using the default in-package `heimdall/models/`). Restart any running process (e.g. playground) so it loads the updated model.
+
+### Training data
+
+- **Labels** come from the built-in **DATA** list in `training/train_bootstrap.py`: curated `(text, Label)` pairs for SILENT, REQUEST, TOPIC_RESET, and HOSTILE.
+- To add or fix behaviour: extend or edit the **DATA** list in that script (or load your own list of `(text, Label)` tuples), then re-run the command above.
+- More detail: [docs/DATA_AND_TRAINING.md](docs/DATA_AND_TRAINING.md).
 
 ---
 
@@ -247,7 +278,7 @@ heimdall/
 │   │   ├── score_engine.py # hostile / reset / utility scores
 │   │   ├── types.py        # Label, SystemAction, etc.
 │   │   └── ...
-│   ├── adapt/               # outcome inference, learner, learning gate
+│   ├── adapt/               # outcome inference, learning gate, config (DECAY, MAX_BIAS)
 │   ├── assets/              # prototypes_offline.json
 │   └── models/              # lr.joblib
 ├── examples/                # gatekeeper_bot.py integration example

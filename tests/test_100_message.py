@@ -29,7 +29,7 @@ def test_real_long_conversation(tmp_path: Path):
     - Hostility boundary handling
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

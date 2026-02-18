@@ -17,7 +17,7 @@ The embedder is **sentence-transformers** `all-MiniLM-L6-v2`. The same embedder 
    Edit `training/train_bootstrap.py` and add more `(text, label)` tuples to the `DATA` list. Keep the same four labels. Then re-run:
 
    ```bash
-   poetry run python training/train_bootstrap.py --models-dir ./models --state-dir ./state
+   poetry run python training/train_bootstrap.py --models-dir ./heimdall/models
    ```
 
 2. **Use your own dataset**  

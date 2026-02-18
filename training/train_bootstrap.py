@@ -55,6 +55,21 @@ DATA: list[tuple[str, Label]] = [
     ("how are you doing", SILENT),
     ("what's up", SILENT),
 
+    ("awesome", SILENT),
+    ("excellent", SILENT),
+    ("oops", SILENT),
+    ("whoops", SILENT),
+    ("great", SILENT),
+    ("perfect", SILENT),
+    ("awesome bro", SILENT),
+    ("sounds good", SILENT),
+    ("understood", SILENT),
+    ("haan", SILENT),
+    ("aah no", SILENT),
+    ("oh no", SILENT),
+    ("okay no", SILENT),
+    ("no no", SILENT),
+
     # -----------------
     # REQUEST (explicit or continuation intent)
     # -----------------
@@ -67,8 +82,27 @@ DATA: list[tuple[str, Label]] = [
     ("need auth system", REQUEST),
     ("how do i do this", REQUEST),
 
+    ("lets start discussion", REQUEST),
+    ("about what", REQUEST),
+    ("about what ?", REQUEST),
+    ("move ahead", REQUEST),
+
     ("lets talk about textiles", REQUEST),
     ("can we discuss art", REQUEST),
+    ("lets discuss about oauth2", REQUEST),
+    ("lets discuss about oauth", REQUEST),
+    ("lets discuss oauth", REQUEST),
+    ("lets discuss about api", REQUEST),
+    ("lets discuss about auth", REQUEST),
+    ("lets discuss about oath3", REQUEST),
+    ("can we discuss security", REQUEST),
+    ("i want to discuss authentication", REQUEST),
+
+    ("why is everything suppressed", REQUEST),
+    ("why is this not working", REQUEST),
+    ("why is nothing working", REQUEST),
+    ("what is going on", REQUEST),
+
     ("suggest a topic", REQUEST),
     ("what should we discuss", REQUEST),
     ("any ideas", REQUEST),
@@ -84,6 +118,9 @@ DATA: list[tuple[str, Label]] = [
 
     # continuation / elaboration cues (intentful)
     ("lets continue", REQUEST),
+    ("anyways lets continue", REQUEST),
+    ("anyway lets continue", REQUEST),
+    ("anyways continue", REQUEST),
     ("go on", REQUEST),
     ("tell me more", REQUEST),
     ("continue please", REQUEST),
@@ -106,6 +143,13 @@ DATA: list[tuple[str, Label]] = [
     ("i agree with you", REQUEST),
     ("i never thought about it that way", REQUEST),
 
+    # Frustration but still engaged (not hostile)
+    ("this is a lot", REQUEST),
+    ("im tired", REQUEST),
+    ("this is annoying", REQUEST),
+    ("why is this so hard", REQUEST),
+    ("ugh", REQUEST),
+
     # Personal sharing (engaged continuation)
     ("i work in tech", REQUEST),
     ("i studied physics in college", REQUEST),
@@ -125,7 +169,7 @@ DATA: list[tuple[str, Label]] = [
     ("go deeper into that", REQUEST),
 
     # -----------------
-    # TOPIC RESET
+    # TOPIC RESET (discard context / start over / change subject)
     # -----------------
     ("change topic", TOPIC_RESET),
     ("lets talk about something else", TOPIC_RESET),
@@ -134,6 +178,30 @@ DATA: list[tuple[str, Label]] = [
     ("switch topic", TOPIC_RESET),
     ("change the topic now", TOPIC_RESET),
     ("move to another topic", TOPIC_RESET),
+    ("lets discuss something else", TOPIC_RESET),
+    ("lets discuss something else?", TOPIC_RESET),
+    ("can we talk about something else", TOPIC_RESET),
+    ("i want to discuss something else", TOPIC_RESET),
+    ("change subject", TOPIC_RESET),
+    ("new subject", TOPIC_RESET),
+    ("different topic", TOPIC_RESET),
+    ("drop that topic", TOPIC_RESET),
+    ("forget about whatever we discussed", TOPIC_RESET),
+    ("forget about whatever we discussed so far", TOPIC_RESET),
+    ("forget what we discussed so far", TOPIC_RESET),
+    ("forget about that", TOPIC_RESET),
+    ("forget that", TOPIC_RESET),
+    ("discard that", TOPIC_RESET),
+    ("discard the context", TOPIC_RESET),
+    ("start over", TOPIC_RESET),
+    ("start fresh", TOPIC_RESET),
+    ("clear context", TOPIC_RESET),
+    ("clear that", TOPIC_RESET),
+    ("scratch that", TOPIC_RESET),
+    ("never mind that", TOPIC_RESET),
+    ("ignore what we talked about", TOPIC_RESET),
+    ("lets not talk about that anymore", TOPIC_RESET),
+    ("move on to something else", TOPIC_RESET),
 
     # -----------------
     # HOSTILE
@@ -142,38 +210,49 @@ DATA: list[tuple[str, Label]] = [
     ("wtf", HOSTILE),
     ("what the hell", HOSTILE),
     ("you are dumb", HOSTILE),
+    ("you're dumb", HOSTILE),
     ("fuck off", HOSTILE),
 
     # imperative hostility
+    ("get lost", HOSTILE),
     ("shut up", HOSTILE),
     ("just shut up", HOSTILE),
     ("be quiet", HOSTILE),
     ("stop talking", HOSTILE),
     ("stop it", HOSTILE),
     ("leave me alone", HOSTILE),
+    ("seriously stop", HOSTILE),
+    ("im done", HOSTILE),
 
-    # direct insult variants
+    # direct insult / put-down variants (keep boundary clear after adding more REQUEST data)
     ("idiot", HOSTILE),
     ("you idiot", HOSTILE),
     ("stupid", HOSTILE),
     ("you are stupid", HOSTILE),
+    ("this is stupid", HOSTILE),
+    ("no this is stupid", HOSTILE),
+    ("this is useless", HOSTILE),
 
     # mild but negative aggression
     ("this is bullshit", HOSTILE),
     ("are you serious", HOSTILE),
+
+    # mild profanity / frustration
+    ("aah shit", HOSTILE),
+    ("ah shit", HOSTILE),
+    ("damn", HOSTILE),
+    ("crap", HOSTILE),
 ]
 
 
-def main(models_dir: Path, state_dir: Path) -> None:
+def main(models_dir: Path) -> None:
     # --------------------------------------------------------------
-    # Build config
+    # Build config (state_dir not used during training; only models + assets are written)
     # --------------------------------------------------------------
     config = HeimdallConfig(
-        state_dir=state_dir,
+        state_dir=Path(".heimdall"),
         models_dir=models_dir,
     )
-
-    config.ensure_dirs()
     config.resolved_models_dir.mkdir(parents=True, exist_ok=True)
     config.resolved_assets_dir.mkdir(parents=True, exist_ok=True)
 
@@ -196,7 +275,7 @@ def main(models_dir: Path, state_dir: Path) -> None:
         embedding: NDArray[np.float64] = encoder.encode(
             text,
             convert_to_numpy=True,
-            normalize_embeddings=False,
+            normalize_embeddings=True,
         )
 
         X_list.append(embedding)
@@ -246,12 +325,6 @@ if __name__ == "__main__":
         default=Path("heimdall/models"),
         help="Directory to write trained models",
     )
-    parser.add_argument(
-        "--state-dir",
-        type=Path,
-        default=Path("state"),
-        help="Directory to write state JSON files",
-    )
 
     args = parser.parse_args()
-    main(args.models_dir, args.state_dir)
+    main(args.models_dir)

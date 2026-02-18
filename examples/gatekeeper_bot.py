@@ -1,3 +1,4 @@
+# examples/gatekeeper_bot.py
 #!/usr/bin/env python3
 """
 Integration example: use heimdall as a gate in front of your assistant (LLM, API, or rule-based).
@@ -31,9 +32,7 @@ from heimdall.core.types import (
 # Config
 # ---------------------------------------------------------------------------
 
-STATE_DIR = Path(__file__).resolve().parent.parent / "state"
-STATE_DIR.mkdir(exist_ok=True)
-
+STATE_DIR = Path(__file__).resolve().parent.parent / ".heimdall"
 config = HeimdallConfig(state_dir=STATE_DIR)
 heimdall.configure_logging(level=logging.INFO)
 

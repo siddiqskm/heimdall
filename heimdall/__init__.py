@@ -14,6 +14,14 @@ _DEFAULT_FILE_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 _DEFAULT_LOG_FILENAME = "heimdall.log"
 
 
+class _FlushingFileHandler(logging.FileHandler):
+    """FileHandler that flushes after each emit so logs appear immediately."""
+
+    def emit(self, record: logging.LogRecord) -> None:
+        super().emit(record)
+        self.flush()
+
+
 def configure_logging(
     level: int = logging.INFO,
     format_string: str = "%(message)s",
@@ -74,7 +82,7 @@ def configure_logging(
             path = None
         if path is not None:
             path.parent.mkdir(parents=True, exist_ok=True)
-            file_h = logging.FileHandler(path, encoding="utf-8")
+            file_h = _FlushingFileHandler(path, encoding="utf-8")
             file_h.setLevel(level)
             file_h.setFormatter(logging.Formatter(_DEFAULT_FILE_FORMAT))
             handlers.append(file_h)

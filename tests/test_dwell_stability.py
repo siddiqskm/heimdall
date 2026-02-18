@@ -19,7 +19,7 @@ def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Pat
     should not break the dwell state.
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

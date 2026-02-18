@@ -26,7 +26,7 @@ def dwell_setup(
     Creates fresh Heimdall pipeline for FSM validation (one chat per run).
     """
     config: HeimdallConfig = HeimdallConfig(
-        state_dir=tmp_path / "heimdall_state"
+        state_dir=tmp_path / ".heimdall"
     )
     embedder: Embedder = Embedder()
     clf: Classifier = Classifier(config=config)

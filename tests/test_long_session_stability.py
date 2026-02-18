@@ -28,7 +28,7 @@ def test_long_session_stability(tmp_path: Path) -> None:
     - No drift or permanent state corruption
     """
 
-    config = HeimdallConfig(state_dir=tmp_path / "heimdall_state")
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
 
     embedder = Embedder()
     clf = Classifier(config=config)

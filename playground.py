@@ -30,8 +30,10 @@ logger = logging.getLogger("heimdall.playground")
 # Config
 # ------------------------------------------------------------------
 
+# Override default (~/.heimdall) so playground state stays in repo
 STATE_DIR = Path(".playground_state")
 PERSIST_INTERVAL_SECONDS = 10
+EXIT_COMMANDS = frozenset({"/exit", "/q", "/quit"})
 
 config = HeimdallConfig(state_dir=STATE_DIR)
 
@@ -74,6 +76,8 @@ def main() -> None:
             raw_text: str = input("> ").strip()
             if not raw_text:
                 continue
+            if raw_text.lower() in EXIT_COMMANDS:
+                break
 
             text = normalize_text(raw_text)
         except EOFError:

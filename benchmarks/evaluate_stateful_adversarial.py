@@ -1,4 +1,4 @@
-# benchmarks/evaluate_stateful_gold_adversarial.py
+# benchmarks/evaluate_stateful_adversarial.py
 
 import json
 from collections import defaultdict
