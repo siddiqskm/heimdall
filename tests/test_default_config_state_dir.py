@@ -36,22 +36,21 @@ def test_default_config_creates_state_and_files(
     assert expected_dir.exists()
     assert expected_dir.is_dir()
 
-    # ---- Persist runtime state ----
+    # ---- Persist runtime state (per-chat) ----
     clf.persist()
 
-    # ---- Canonical runtime paths ----
-    user_delta_file = cfg.user_delta_path
-    user_proto_file = cfg.user_prototypes_path
+    # ---- Chat-scoped paths ----
+    chat_dir = cfg.chat_dir(clf.chat_id)
+    delta_file = chat_dir / "delta.json"
+    proto_file = chat_dir / "prototypes.json"
 
-    # ---- Files must exist ----
-    assert user_delta_file.exists()
-    assert user_proto_file.exists()
+    assert delta_file.exists()
+    assert proto_file.exists()
 
-    # ---- Files must contain valid JSON ----
-    with user_delta_file.open() as f:
-        user_delta_data = json.load(f)
-        assert isinstance(user_delta_data, dict)
-
-    with user_proto_file.open() as f:
-        user_proto_data = json.load(f)
-        assert isinstance(user_proto_data, dict)
+    # ---- Delta is a single bias vector (list); prototypes are dict ----
+    with delta_file.open() as f:
+        delta_data = json.load(f)
+        assert isinstance(delta_data, list)
+    with proto_file.open() as f:
+        proto_data = json.load(f)
+        assert isinstance(proto_data, dict)

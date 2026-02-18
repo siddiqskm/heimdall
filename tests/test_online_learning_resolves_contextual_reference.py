@@ -1,5 +1,6 @@
 # tests/test_online_learning_resolves_contextual_reference.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -8,6 +9,8 @@ from heimdall.core.decision import decide
 from heimdall.core.dwell import LabelDwell
 from heimdall.core.embedder import Embedder
 from heimdall.core.types import LABEL_TO_ID, REQUEST
+
+logger = logging.getLogger(__name__)
 
 
 def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
@@ -20,11 +23,9 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config)
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
-    user = "learning_user_reclassify"
-
-    clf.reset_user(user)
+    clf.reset_chat()
 
     weak = "this part"
     strong = "this part handles user authentication"
@@ -37,47 +38,42 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
     # --------------------------------------------------
     # BEFORE learning
     # --------------------------------------------------
-    predicted_w1, conf_w1, act_w1 = clf.predict(vec_weak, user)
+    pred_w1 = clf.predict(vec_weak)
     label_w1 = decide(
-        dwell.apply(user, predicted_w1, act_w1),
-        conf_w1,
+        dwell.apply(pred_w1.label, pred_w1.activation),
+        pred_w1.confidence,
         confidence_threshold=config.confidence_threshold,
     )
-
-    print(f"[before learning] weak → {label_w1} (conf={conf_w1:.3f})")
+    conf_w1 = pred_w1.confidence
+    logger.info("[before learning] weak → %s (conf=%.3f)", label_w1, conf_w1)
 
     # --------------------------------------------------
     # Simulate sustained strong REQUEST signals
     # --------------------------------------------------
     for _ in range(6):
-        predicted_s, conf_s, act_s = clf.predict(vec_strong, user)
+        pred_s = clf.predict(vec_strong)
         label_s = decide(
-            dwell.apply(user, predicted_s, act_s),
-            conf_s,
+            dwell.apply(pred_s.label, pred_s.activation),
+            pred_s.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
         assert label_s == REQUEST
-
-        clf.update_bias(
-            user_id=user,
-            label_index=request_index,
-            delta=0.02,
-        )
+        clf.update_bias(request_index, delta=0.02)
 
     clf.persist()
 
     # --------------------------------------------------
     # AFTER learning
     # --------------------------------------------------
-    predicted_w2, conf_w2, act_w2 = clf.predict(vec_weak, user)
+    pred_w2 = clf.predict(vec_weak)
     label_w2 = decide(
-        dwell.apply(user, predicted_w2, act_w2),
-        conf_w2,
+        dwell.apply(pred_w2.label, pred_w2.activation),
+        pred_w2.confidence,
         confidence_threshold=config.confidence_threshold,
     )
+    conf_w2 = pred_w2.confidence
 
-    print(f"[after learning] weak → {label_w2} (conf={conf_w2:.3f})")
+    logger.info("[after learning] weak → %s (conf=%.3f)", label_w2, conf_w2)
 
     # --------------------------------------------------
     # Robust assertions

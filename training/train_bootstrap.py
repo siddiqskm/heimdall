@@ -233,16 +233,9 @@ def main(models_dir: Path, state_dir: Path) -> None:
     print(f"Saved offline prototypes → {config.offline_prototypes_path}")
 
     # --------------------------------------------------------------
-    # Seed LearningGate state (runtime)
+    # Runtime state is per-chat; no global user delta to seed.
+    # Each new Classifier(config, chat_id=None) starts with zero bias.
     # --------------------------------------------------------------
-    initial_user_delta = {
-        "__global__": [0.0 for _ in range(len(LABEL_TO_ID))]
-    }
-
-    with config.user_delta_path.open("w", encoding="utf-8") as f:
-        json.dump(initial_user_delta, f, indent=2)
-
-    print(f"Initialized user state → {config.user_delta_path}")
 
 
 if __name__ == "__main__":

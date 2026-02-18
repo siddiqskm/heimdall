@@ -31,7 +31,6 @@ from heimdall.core.types import (
 # Config
 # ---------------------------------------------------------------------------
 
-USER_ID = "example_user"
 STATE_DIR = Path(__file__).resolve().parent.parent / "state"
 STATE_DIR.mkdir(exist_ok=True)
 
@@ -40,7 +39,7 @@ heimdall.configure_logging(level=logging.INFO)
 
 embedder = Embedder()
 clf = Classifier(config=config)
-dwell = LabelDwell(config=config)
+dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
 
 # ---------------------------------------------------------------------------
@@ -63,8 +62,9 @@ def gate_turn(user_message: str, context: list[str]) -> tuple[SystemAction, str 
     reply is None for NO_RESPONSE; otherwise a string for the user.
     """
     vec = embedder.encode(user_message)
-    predicted, confidence, activation = clf.predict(vec, USER_ID)
-    dwell_label = dwell.apply(USER_ID, predicted, activation)
+    pred = clf.predict(vec, text=user_message)
+    predicted, confidence, activation = pred.label, pred.confidence, pred.activation
+    dwell_label = dwell.apply(predicted, activation)
     final_label = decide(
         dwell_label,
         confidence,

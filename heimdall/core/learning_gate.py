@@ -36,13 +36,13 @@ class LearningGate:
         self.min_stable_turns = min_stable_turns
         self.min_interval_sec = min_interval_sec
 
-        # (user_id, label) -> last learn timestamp
+        # (chat_id, label) -> last learn timestamp
         self._last_learn_ts: dict[tuple[str, Label], float] = {}
 
     def allow(
         self,
         *,
-        user_id: str,
+        chat_id: str,
         final_label: Label,
         confidence: float,
         stable_turns: int,
@@ -74,7 +74,7 @@ class LearningGate:
             return False
 
         # ---- Rule 6: rate limiting ----
-        key = (user_id, final_label)
+        key = (chat_id, final_label)
         last_ts = self._last_learn_ts.get(key)
 
         if last_ts is not None and (now - last_ts) < self.min_interval_sec:

@@ -33,4 +33,4 @@ def pytest_configure(config: pytest.Config) -> None:
 
     import heimdall
 
-    heimdall.configure_logging(level=level)
+    heimdall.configure_logging(level=level, also_configure=["tests"])

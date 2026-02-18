@@ -17,7 +17,6 @@ from heimdall.core.types import Label
 # ---------------------------
 
 VERSION = 1
-USER_ID = "__stateless_eval__"
 
 
 # ---------------------------
@@ -86,9 +85,8 @@ def main() -> None:
         text: str = sample["text"]
         expected = cast(Label, sample["expected_label"])
 
-        # Stateless → reset per sample
-        clf.reset_user(USER_ID)
-        clf.end_session()
+        # Stateless → fresh chat per sample
+        clf.reset_chat()
 
         vector: NDArray[np.float64] = embedder.encode(
             text,
@@ -96,7 +94,8 @@ def main() -> None:
             normalize_embeddings=False,
         )
 
-        pred_label, confidence, _ = clf.predict(vector, USER_ID)
+        pred = clf.predict(vector, text=text)
+        pred_label, confidence = pred.label, pred.confidence
 
         total += 1
         per_class_counts[expected] += 1

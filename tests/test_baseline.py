@@ -1,5 +1,6 @@
 # tests/test_baseline.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -14,6 +15,8 @@ from heimdall.core.types import (
     TOPIC_RESET,
     Label,
 )
+
+logger = logging.getLogger(__name__)
 
 TEST_CASES: list[tuple[str, Label]] = [
     # --- silence / noise ---
@@ -59,29 +62,22 @@ def test_baseline(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config)
-
-    user_id = "baseline_user"
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
     for text, expected_label in TEST_CASES:
         vector = embedder.encode(text)
-
-        # classifier returns (label, confidence, activation)
-        predicted, confidence, activation = clf.predict(vector, user_id)
-
-        # dwell uses activation (not confidence)
-        dwell_label = dwell.apply(user_id, predicted, activation)
-
-        # final decision gate
+        pred = clf.predict(vector)
+        dwell_label = dwell.apply(pred.label, pred.activation)
         final_label = decide(
             dwell_label,
-            confidence,
+            pred.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
-        print(
-            f"{text!r} → {final_label} "
-            f"(conf={confidence:.2f}, act={activation:.2f})"
+        logger.info(
+            "%r → %s (conf=%.2f, act=%.2f)",
+            text,
+            final_label,
+            pred.confidence,
+            pred.activation,
         )
-
         assert final_label == expected_label

@@ -1,5 +1,6 @@
 # heimdall/core/config.py
 
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -80,16 +81,12 @@ class HeimdallConfig:
     outcome_escalated_min_next_len: int = 20
 
     # ------------------------------------------------------------------
-    # Runtime state paths (user-scoped)
+    # Runtime state paths (chat-scoped)
     # ------------------------------------------------------------------
 
-    @property
-    def user_delta_path(self) -> Path:
-        return self.state_dir / "user_delta.json"
-
-    @property
-    def user_prototypes_path(self) -> Path:
-        return self.state_dir / "prototypes_user.json"
+    def chat_dir(self, chat_id: str) -> Path:
+        """Directory for persisting state for one chat."""
+        return self.state_dir / "chats" / chat_id
 
     # ------------------------------------------------------------------
     # Package asset paths (immutable)
@@ -125,6 +122,16 @@ class HeimdallConfig:
 
     def ensure_dirs(self) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)
+
+    def ensure_chat_dir(self, chat_id: str) -> None:
+        """Ensure directory for a chat exists."""
+        self.chat_dir(chat_id).mkdir(parents=True, exist_ok=True)
+
+    def delete_chat_state(self, chat_id: str) -> None:
+        """Remove persisted state for this chat. Idempotent if dir already missing."""
+        path = self.chat_dir(chat_id)
+        if path.exists():
+            shutil.rmtree(path)
 
 
 def default_config() -> HeimdallConfig:

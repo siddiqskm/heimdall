@@ -1,5 +1,6 @@
 # tests/test_long_session_stability.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -15,6 +16,8 @@ from heimdall.core.types import (
     Label,
 )
 
+logger = logging.getLogger(__name__)
+
 
 def test_long_session_stability(tmp_path: Path) -> None:
     """
@@ -29,9 +32,7 @@ def test_long_session_stability(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config, debug=True)
-
-    user_id = "long_session_user"
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id, debug=True)
 
     # Structured repeating pattern
     sequence: list[tuple[str, Label]] = [
@@ -70,27 +71,26 @@ def test_long_session_stability(tmp_path: Path) -> None:
 
     for idx, (text, expected_label) in enumerate(full_sequence):
         vector = embedder.encode(text)
-
-        predicted, confidence, activation = clf.predict(vector, user_id)
-        dwell_label = dwell.apply(user_id, predicted, activation)
+        pred = clf.predict(vector)
+        dwell_label = dwell.apply(pred.label, pred.activation)
         final_label = decide(
             dwell_label,
-            confidence,
+            pred.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
-        # Track events
         if final_label == HOSTILE:
             hostile_count += 1
         if final_label == TOPIC_RESET:
             reset_count += 1
-
-        print(
-            f"{idx:03d} | {text!r:<25} "
-            f"pred={predicted:<10} "
-            f"dwell={dwell_label:<10} "
-            f"final={final_label:<10} "
-            f"(conf={confidence:.2f}, act={activation:.2f})"
+        logger.info(
+            "%03d | %-25r pred=%-10s dwell=%-10s final=%-10s (conf=%.2f, act=%.2f)",
+            idx,
+            text,
+            pred.label,
+            dwell_label,
+            final_label,
+            pred.confidence,
+            pred.activation,
         )
 
         assert final_label == expected_label, (

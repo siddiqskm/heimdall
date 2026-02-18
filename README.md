@@ -143,17 +143,36 @@ Key options (see `HeimdallConfig` in `heimdall/core/config.py`):
 Heimdall follows the usual Python library pattern:
 
 - **No handlers by default** – the package attaches a `NullHandler` to the `"heimdall"` logger so nothing is emitted until the app configures logging.
-- **Your app** (or a script like the playground) should enable output by calling:
+- **Your app** (or a script like the playground) should enable output by calling `heimdall.configure_logging()` once.
 
-  ```python
-  import heimdall
-  heimdall.configure_logging()  # stderr, INFO
-  # Or with level / format / file:
-  heimdall.configure_logging(level=logging.DEBUG)
-  heimdall.configure_logging(handler=logging.FileHandler("heimdall.log"))
-  ```
+Because the package often runs in the background (e.g. behind a chat API), **writing to a log file** is supported and recommended for production:
 
-- **No log file is created by default**; logs go to stderr unless you pass a `FileHandler`.
+```python
+import heimdall
+
+# Console only (default)
+heimdall.configure_logging()
+
+# Default log file: ~/.heimdall/heimdall.log (creates dir if needed)
+heimdall.configure_logging(log_file=True)
+
+# Log file in a different directory (e.g. custom state_dir)
+heimdall.configure_logging(log_file=True, log_dir="/var/log/heimdall")
+
+# Explicit log file path; creates parent dirs
+heimdall.configure_logging(log_file="/var/log/heimdall/app.log", use_console=False)
+
+# Both console and file
+heimdall.configure_logging(log_file=True)
+```
+
+Options:
+
+- **`log_file`** – If `True`, a file handler is added at `(log_dir or ~/.heimdall)/heimdall.log`. If a path (str or Path), that path is used. If `None` or `False`, no file.
+- **`log_dir`** – When `log_file=True`, directory for the log file (default `~/.heimdall`). Ignored when `log_file` is an explicit path.
+- **`use_console`** – If `True` (default) and no custom `handler` is passed, a `StreamHandler` (stderr) is added. Set to `False` when you only want file output.
+- **`handler`** – Optional single handler to use instead of the default stream (and/or file when `log_file` is set).
+- **`also_configure`** – Optional list of logger names (e.g. `["tests"]`) to attach the same handlers to, so those loggers emit to the same place.
 
 ---
 

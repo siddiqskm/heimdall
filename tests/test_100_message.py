@@ -1,5 +1,6 @@
 # tests/test_100_message.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -14,6 +15,8 @@ from heimdall.core.types import (
     TOPIC_RESET,
     Label,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def test_real_long_conversation(tmp_path: Path):
@@ -30,9 +33,7 @@ def test_real_long_conversation(tmp_path: Path):
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config)
-
-    user = "real_chat_user"
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
     CHAT: list[tuple[str, Label]] = [
         # ---- warmup / social noise (1–8) ----
@@ -160,18 +161,19 @@ def test_real_long_conversation(tmp_path: Path):
 
     for index, (text, expected_label) in enumerate(CHAT):
         vec = embedder.encode(text)
-
-        predicted, confidence, activation = clf.predict(vec, user)
-        dwell_label = dwell.apply(user, predicted, activation)
+        pred = clf.predict(vec)
+        dwell_label = dwell.apply(pred.label, pred.activation)
         final_label = decide(
             dwell_label,
-            confidence,
+            pred.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
-        print(
-            f"{index:02d} | {text!r} → {final_label} "
-            f"(conf={confidence:.2f}, act={activation:.2f})"
+        logger.info(
+            "%02d | %r → %s (conf=%.2f, act=%.2f)",
+            index,
+            text,
+            final_label,
+            pred.confidence,
+            pred.activation,
         )
-
         assert final_label == expected_label

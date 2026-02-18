@@ -16,7 +16,6 @@ from heimdall.core.types import Label
 
 VERSION = 1
 DATA_FILE = "benchmark.json"
-USER_ID = "__benchmark_eval__"
 
 
 # ---------------------------
@@ -116,10 +115,8 @@ def main() -> None:
             normalize_embeddings=False,
         )
 
-        pred_label, confidence, _ = clf.predict(
-            vector,
-            USER_ID,
-        )
+        pred = clf.predict(vector, text=text)
+        pred_label, confidence = pred.label, pred.confidence
 
         total += 1
         per_class_total[expected] += 1

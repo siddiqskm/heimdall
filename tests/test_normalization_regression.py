@@ -1,5 +1,6 @@
 # tests/test_normalization_regression.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -14,6 +15,8 @@ from heimdall.core.types import (
     TOPIC_RESET,
     Label,
 )
+
+logger = logging.getLogger(__name__)
 
 CHAT: list[tuple[str, Label]] = [
     # ----------------------------
@@ -89,24 +92,23 @@ def test_realistic_conversation_flow(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config)
-
-    user_id = "conversation_user"
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
     for index, (text, expected_label) in enumerate(CHAT):
         vector = embedder.encode(text)
-
-        predicted, confidence, activation = clf.predict(vector, user_id)
-        dwell_label = dwell.apply(user_id, predicted, activation)
+        pred = clf.predict(vector, text=text)
+        dwell_label = dwell.apply(pred.label, pred.activation)
         final_label = decide(
             dwell_label,
-            confidence,
+            pred.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
-        print(
-            f"{index:02d} | {text!r} → {final_label} "
-            f"(conf={confidence:.2f}, act={activation:.2f})"
+        logger.info(
+            "%02d | %r → %s (conf=%.2f, act=%.2f)",
+            index,
+            text,
+            final_label,
+            pred.confidence,
+            pred.activation,
         )
-
         assert final_label == expected_label

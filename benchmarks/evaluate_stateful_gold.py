@@ -15,7 +15,6 @@ from heimdall.core.types import Label
 # ---------------------------
 
 VERSION = 1
-USER_ID = "__stateful_eval__"
 
 
 # ---------------------------
@@ -115,8 +114,7 @@ def main() -> None:
     for convo in conversations:
         print(f"\n--- Conversation: {convo['conversation_id']} ---")
 
-        clf.reset_user(USER_ID)
-        clf.end_session()
+        clf.reset_chat()
 
         for turn in convo["turns"]:
             text = turn["text"]
@@ -128,11 +126,8 @@ def main() -> None:
                 normalize_embeddings=False,
             )
 
-            pred_label, confidence, _ = clf.predict(
-                vector,
-                USER_ID,
-            )
-
+            pred = clf.predict(vector, text=text)
+            pred_label, confidence = pred.label, pred.confidence
             clf.maybe_add_prototype(pred_label, vector, confidence)
 
             total += 1

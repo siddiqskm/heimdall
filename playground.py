@@ -37,10 +37,8 @@ config = HeimdallConfig(state_dir=STATE_DIR)
 
 embedder: Embedder = Embedder()
 clf: Classifier = Classifier(config=config)
-dwell = LabelDwell(config=config)
+dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 learning_gate = LearningGate(config=config)
-
-user_id: str = "test_user"
 
 
 # ------------------------------------------------------------------
@@ -88,9 +86,10 @@ def main() -> None:
 
         # ---- classification ----
         vec = embedder.encode(text)
-        predicted, conf, activation = clf.predict(vec, user_id, text=text)
+        pred = clf.predict(vec, text=text)
+        predicted, conf, activation = pred.label, pred.confidence, pred.activation
 
-        dwell_label = dwell.apply(user_id, predicted, activation)
+        dwell_label = dwell.apply(predicted, activation)
         final: Label = decide(
             dwell_label,
             conf,
@@ -121,31 +120,29 @@ def main() -> None:
             prev_label is not None
             and not _is_garbage(text)
             and learning_gate.allow(
-                user_id=user_id,
+                chat_id=clf.chat_id,
                 final_label=prev_label,
                 confidence=conf,
-                stable_turns=dwell.stable_turns(user_id, prev_label),
+                stable_turns=dwell.stable_turns(prev_label),
                 action=prev_action or action,
                 outcome=outcome,
                 now=now,
             )
         ):
             delta = -0.05 if outcome == ESCALATED else 0.02
-            clf.update_bias(
-                user_id,
-                LABEL_TO_ID[prev_label],
-                delta=delta,
-            )
+            clf.update_bias(LABEL_TO_ID[prev_label], delta=delta)
 
         # ---- persist periodically ----
         if now - last_persist > PERSIST_INTERVAL_SECONDS:
             clf.persist()
+            dwell.persist()
             last_persist = now
 
         prev_action = action
         prev_label = final
 
     clf.persist()
+    dwell.persist()
 
 
 if __name__ == "__main__":

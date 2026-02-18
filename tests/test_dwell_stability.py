@@ -1,5 +1,6 @@
 # tests/test_dwell_stability.py
 
+import logging
 from pathlib import Path
 
 from heimdall.core.classifier import Classifier
@@ -8,6 +9,8 @@ from heimdall.core.decision import decide
 from heimdall.core.dwell import LabelDwell
 from heimdall.core.embedder import Embedder
 from heimdall.core.types import REQUEST
+
+logger = logging.getLogger(__name__)
 
 
 def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Path):
@@ -20,9 +23,7 @@ def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Pat
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(config=config)
-
-    user = "dwell_user"
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
 
     sequence = [
         "awesome",
@@ -36,21 +37,17 @@ def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Pat
     ]
 
     labels = []
-
     for text in sequence:
         vec = embedder.encode(text)
-        predicted, conf, activation = clf.predict(vec, user)
-
-        dwell_label = dwell.apply(user, predicted, activation)
+        pred = clf.predict(vec)
+        dwell_label = dwell.apply(pred.label, pred.activation)
         final_label = decide(
             dwell_label,
-            conf,
+            pred.confidence,
             confidence_threshold=config.confidence_threshold,
         )
-
         labels.append(final_label)
-
-        print(f"{text!r} → {final_label}")
+        logger.info("%r → %s", text, final_label)
 
     # Once REQUEST appears, it must persist
     assert REQUEST in labels

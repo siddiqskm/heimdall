@@ -21,243 +21,115 @@ from heimdall.core.types import (
 @pytest.fixture()
 def dwell_setup(
     tmp_path: Path,
-) -> tuple[Embedder, Classifier, LabelDwell, str]:
+) -> tuple[Embedder, Classifier, LabelDwell]:
     """
-    Creates fresh Heimdall pipeline for FSM validation.
+    Creates fresh Heimdall pipeline for FSM validation (one chat per run).
     """
-
     config: HeimdallConfig = HeimdallConfig(
         state_dir=tmp_path / "heimdall_state"
     )
-
     embedder: Embedder = Embedder()
     clf: Classifier = Classifier(config=config)
-    dwell: LabelDwell = LabelDwell(config=config, debug=False)
-
-    user_id: str = "fsm_test_user"
-
-    return embedder, clf, dwell, user_id
+    dwell: LabelDwell = LabelDwell(config=config, chat_id=clf.chat_id, debug=False)
+    return embedder, clf, dwell
 
 
 def run_turn(
     embedder: Embedder,
     clf: Classifier,
     dwell: LabelDwell,
-    user_id: str,
     text: str,
 ) -> tuple[Label, DwellState]:
-    """
-    Helper to execute a single turn and return final label and FSM state.
-    """
-
+    """Execute a single turn and return final label and FSM state."""
     vector = embedder.encode(text)
-
-    predicted: Label
-    confidence: float
-    activation: float
-
-    predicted, confidence, activation = clf.predict(
-        vector,
-        user_id,
-    )
-
-    dwell_label: Label = dwell.apply(
-        user_id,
-        predicted,
-        activation,
-    )
-
-    final_label: Label = decide(
-        dwell_label,
-        confidence,
-    )
-
-    state: DwellState = dwell.state[user_id]
-
-    return final_label, state
+    pred = clf.predict(vector)
+    predicted, confidence, activation = pred.label, pred.confidence, pred.activation
+    dwell_label = dwell.apply(predicted, activation)
+    final_label = decide(dwell_label, confidence)
+    return final_label, dwell.state
 
 
 def test_idle_to_intent_transition(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates IDLE → INTENT transition.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "lets discuss space",
-    )
+    """Validates IDLE → INTENT transition."""
+    embedder, clf, dwell = dwell_setup
+    label, state = run_turn(embedder, clf, dwell, "lets discuss space")
 
     assert label == REQUEST
     assert state == DwellState.INTENT
 
 
 def test_intent_continuity_with_acknowledgement(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates benign SILENT inherits intent.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    run_turn(embedder, clf, dwell, user_id, "lets discuss space")
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "cool",
-    )
+    """Validates benign SILENT inherits intent."""
+    embedder, clf, dwell = dwell_setup
+    run_turn(embedder, clf, dwell, "lets discuss space")
+    label, state = run_turn(embedder, clf, dwell, "cool")
 
     assert label == REQUEST
     assert state == DwellState.INTENT
 
 
 def test_intent_decay_on_second_silent(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates intent exits after decay threshold.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    run_turn(embedder, clf, dwell, user_id, "lets discuss space")
-
-    run_turn(embedder, clf, dwell, user_id, "cool")
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "hey",
-    )
+    """Validates intent exits after decay threshold."""
+    embedder, clf, dwell = dwell_setup
+    run_turn(embedder, clf, dwell, "lets discuss space")
+    run_turn(embedder, clf, dwell, "cool")
+    label, state = run_turn(embedder, clf, dwell, "hey")
 
     assert label == REQUEST
     assert state == DwellState.INTENT
 
 
 def test_hostile_entry_and_recovery(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates HOSTILE entry and cooldown-based recovery.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    # enter hostile
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "what the hell",
-    )
-
+    """Validates HOSTILE entry and cooldown-based recovery."""
+    embedder, clf, dwell = dwell_setup
+    label, state = run_turn(embedder, clf, dwell, "what the hell")
     assert label == HOSTILE
     assert state == DwellState.HOSTILE
 
-    # cooldown turn 1
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "lets continue",
-    )
-
+    label, state = run_turn(embedder, clf, dwell, "lets continue")
     assert label == HOSTILE
     assert state == DwellState.HOSTILE
 
-    # cooldown turn 2
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "continue please",
-    )
-
+    label, state = run_turn(embedder, clf, dwell, "continue please")
     assert label == HOSTILE
     assert state == DwellState.HOSTILE
 
-    # recovery allowed now
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "lets continue",
-    )
-
+    label, state = run_turn(embedder, clf, dwell, "lets continue")
     assert label == REQUEST
     assert state == DwellState.INTENT
 
 
 def test_topic_reset_transition(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates reset forces POST_RESET state.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    run_turn(embedder, clf, dwell, user_id, "lets discuss ai")
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "lets switch gears",
-    )
+    """Validates reset forces POST_RESET state."""
+    embedder, clf, dwell = dwell_setup
+    run_turn(embedder, clf, dwell, "lets discuss ai")
+    label, state = run_turn(embedder, clf, dwell, "lets switch gears")
 
     assert label == TOPIC_RESET
     assert state == DwellState.POST_RESET
 
 
 def test_post_reset_requires_new_intent(
-    dwell_setup: tuple[Embedder, Classifier, LabelDwell, str],
+    dwell_setup: tuple[Embedder, Classifier, LabelDwell],
 ) -> None:
-    """
-    Validates reset blocks intent until new REQUEST.
-    """
-
-    embedder, clf, dwell, user_id = dwell_setup
-
-    run_turn(embedder, clf, dwell, user_id, "lets discuss ai")
-
-    run_turn(embedder, clf, dwell, user_id, "lets switch gears")
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "cool",
-    )
-
+    """Validates reset blocks intent until new REQUEST."""
+    embedder, clf, dwell = dwell_setup
+    run_turn(embedder, clf, dwell, "lets discuss ai")
+    run_turn(embedder, clf, dwell, "lets switch gears")
+    label, state = run_turn(embedder, clf, dwell, "cool")
     assert label == SILENT
     assert state == DwellState.POST_RESET
-
-    label, state = run_turn(
-        embedder,
-        clf,
-        dwell,
-        user_id,
-        "lets discuss robotics",
-    )
+    label, state = run_turn(embedder, clf, dwell, "lets discuss robotics")
 
     assert label == REQUEST
     assert state == DwellState.INTENT

@@ -1,6 +1,7 @@
 # heimdall/core/classifier.py
 
 import logging
+import uuid
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,7 +16,7 @@ from heimdall.core.model_loader import (
     load_lr_model,
     load_offline_prototypes,
 )
-from heimdall.core.persistence import load_user_delta, save_user_delta
+from heimdall.core.persistence import load_chat_delta, save_chat_delta
 from heimdall.core.persistence_prototypes import (
     load_prototypes,
     save_prototypes,
@@ -32,7 +33,6 @@ from heimdall.core.types import (
     Label,
 )
 
-type UserID = str
 type EmbeddingVector = NDArray[np.float64]
 type BiasVector = NDArray[np.float64]
 
@@ -64,39 +64,46 @@ class Prediction:
 # ==========================================================
 
 class Classifier:
+    """
+    One instance per chat. Pass chat_id to resume; omit to start a new chat.
+    """
+
     def __init__(
         self,
         config: HeimdallConfig | None = None,
+        chat_id: str | None = None,
     ) -> None:
 
         self.config = config or default_config()
         self.config.ensure_dirs()
 
+        self._chat_id: str = chat_id if chat_id else uuid.uuid4().hex
+        self.config.ensure_chat_dir(self._chat_id)
+
         # ---- Model ----
         self.model = load_lr_model(self.config.lr_model_path)
         self._normalize_model()
 
-        # ---- Paths ----
-        self.state_path: Path = self.config.user_delta_path
-        self.proto_user_path: Path = self.config.user_prototypes_path
+        # ---- Paths (per chat) ----
+        chat_dir = self.config.chat_dir(self._chat_id)
+        self._delta_path: Path = chat_dir / "delta.json"
+        self._proto_path: Path = chat_dir / "prototypes.json"
 
-        # ---- Bias ----
-        self.user_delta: dict[UserID, BiasVector] = load_user_delta(
-            self.state_path
-        )
+        # ---- Bias (single vector for this chat) ----
+        loaded = load_chat_delta(self._delta_path)
         self.num_labels: int = len(LABELS)
+        self._bias: BiasVector = (
+            loaded if loaded is not None else np.zeros(self.num_labels)
+        )
 
         # ---- Prototypes ----
         self.session_prototypes = PrototypeStore(
             max_per_label=self.config.session_proto_limit
         )
-
         self.user_prototypes = PrototypeStore(
             max_per_label=self.config.user_proto_limit
         )
-        self.user_prototypes.store = load_prototypes(
-            self.proto_user_path
-        )
+        self.user_prototypes.store = load_prototypes(self._proto_path)
 
         self.offline_prototypes = PrototypeStore(
             max_per_label=self.config.offline_proto_limit
@@ -108,9 +115,13 @@ class Classifier:
         # ---- Score Engine ----
         self._score_engine = ScoreEngine(self.config)
 
-        # ---- Context memory ----
-        self._recent_vectors: dict[UserID, list[EmbeddingVector]] = {}
+        # ---- Context memory (this chat only) ----
+        self._recent_vectors: list[EmbeddingVector] = []
         self._max_recent: int = 20
+
+    @property
+    def chat_id(self) -> str:
+        return self._chat_id
 
     # ------------------------------------------------------------------
     # Model compatibility
@@ -136,31 +147,14 @@ class Classifier:
     # Helpers
     # ------------------------------------------------------------------
 
-    def _init_user(self, user_id: UserID) -> None:
-        if user_id not in self.user_delta:
-            self.user_delta[user_id] = np.zeros(self.num_labels)
+    def _apply_decay(self) -> None:
+        self._bias *= DECAY
+        self._bias[np.abs(self._bias) < 1e-4] = 0.0
 
-        if user_id not in self._recent_vectors:
-            self._recent_vectors[user_id] = []
-
-    def _apply_decay(self, user_id: UserID) -> None:
-        self.user_delta[user_id] *= DECAY
-        self.user_delta[user_id][
-            np.abs(self.user_delta[user_id]) < 1e-4
-        ] = 0.0
-
-    def _update_context(
-        self,
-        user_id: UserID,
-        vector: EmbeddingVector,
-    ) -> None:
-
-        self._recent_vectors[user_id].append(vector)
-
-        if len(self._recent_vectors[user_id]) > self._max_recent:
-            self._recent_vectors[user_id] = self._recent_vectors[user_id][
-                -self._max_recent :
-            ]
+    def _update_context(self, vector: EmbeddingVector) -> None:
+        self._recent_vectors.append(vector)
+        if len(self._recent_vectors) > self._max_recent:
+            self._recent_vectors = self._recent_vectors[-self._max_recent :]
 
     # ------------------------------------------------------------------
     # Public API
@@ -169,11 +163,8 @@ class Classifier:
     def predict(
         self,
         vector: EmbeddingVector,
-        user_id: UserID,
         text: str | None = None,
     ) -> Prediction:
-
-        self._init_user(user_id)
 
         # --------------------------------------------------------------
         # Compute Scores
@@ -182,7 +173,7 @@ class Classifier:
         scores: Scores = self._score_engine.compute(
             vector=vector,
             text=text or "",
-            recent_vectors=self._recent_vectors[user_id],
+            recent_vectors=self._recent_vectors,
             offline_prototypes=self.offline_prototypes,
             user_prototypes=self.user_prototypes,
             session_prototypes=self.session_prototypes,
@@ -198,7 +189,7 @@ class Classifier:
             threshold=self.config.session_proto_threshold,
         )
         if proto_label is not None:
-            self._update_context(user_id, vector)
+            self._update_context(vector)
             return Prediction(
                 proto_label,
                 activation,
@@ -214,7 +205,7 @@ class Classifier:
             threshold=self.config.user_proto_threshold,
         )
         if proto_label is not None:
-            self._update_context(user_id, vector)
+            self._update_context(vector)
             return Prediction(
                 proto_label,
                 activation,
@@ -229,9 +220,9 @@ class Classifier:
             self.model.predict_proba([vector])[0]
         )
 
-        self._apply_decay(user_id)
+        self._apply_decay()
 
-        biased_probs = probs + self.user_delta[user_id]
+        biased_probs = probs + self._bias
         biased_probs = np.clip(biased_probs, 1e-6, 1.0)
         biased_probs = biased_probs / biased_probs.sum()
 
@@ -252,7 +243,7 @@ class Classifier:
                 and proto_label == SILENT
             )
         ):
-            self._update_context(user_id, vector)
+            self._update_context(vector)
             return Prediction(
                 proto_label,
                 activation,
@@ -297,7 +288,7 @@ class Classifier:
         # Update Context
         # --------------------------------------------------------------
 
-        self._update_context(user_id, vector)
+        self._update_context(vector)
 
         # --------------------------------------------------------------
         # Final Prediction
@@ -333,27 +324,26 @@ class Classifier:
 
     def update_bias(
         self,
-        user_id: UserID,
         label_index: int,
         delta: float,
     ) -> None:
-        self._init_user(user_id)
-        self.user_delta[user_id][label_index] = np.clip(
-            self.user_delta[user_id][label_index] + delta,
+        self._bias[label_index] = np.clip(
+            self._bias[label_index] + delta,
             -MAX_BIAS,
             MAX_BIAS,
         )
 
     def persist(self) -> None:
-        save_user_delta(self.state_path, self.user_delta)
-        save_prototypes(
-            self.proto_user_path,
-            self.user_prototypes.store,
-        )
+        save_chat_delta(self._delta_path, self._bias)
+        save_prototypes(self._proto_path, self.user_prototypes.store)
 
     def end_session(self) -> None:
         self.session_prototypes.clear()
 
-    def reset_user(self, user_id: str) -> None:
-        self.user_delta.pop(user_id, None)
-        self._recent_vectors.pop(user_id, None)
+    def reset_chat(self) -> None:
+        """Clear in-memory state for this chat and persist (bias zeroed, prototypes cleared)."""
+        self._bias = np.zeros(self.num_labels)
+        self._recent_vectors.clear()
+        self.session_prototypes.clear()
+        self.user_prototypes.clear()
+        self.persist()
