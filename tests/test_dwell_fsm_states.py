@@ -32,7 +32,7 @@ def dwell_setup(
 
     embedder: Embedder = Embedder()
     clf: Classifier = Classifier(config=config)
-    dwell: LabelDwell = LabelDwell(debug=False)
+    dwell: LabelDwell = LabelDwell(config=config, debug=False)
 
     user_id: str = "fsm_test_user"
 

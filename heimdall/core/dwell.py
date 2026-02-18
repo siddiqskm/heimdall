@@ -1,9 +1,12 @@
 # heimdall/core/dwell.py
 
+import logging
 from enum import StrEnum
 
-from heimdall.core.decision import CONF_THRESHOLD
+from heimdall.core.config import HeimdallConfig
 from heimdall.core.types import HOSTILE, REQUEST, SILENT, TOPIC_RESET, Label
+
+logger = logging.getLogger(__name__)
 
 
 class DwellState(StrEnum):
@@ -36,16 +39,32 @@ class LabelDwell:
     - Reset always wins
     """
 
-    HOSTILE_COOLDOWN: int = 2
-    INTENT_DECAY_SILENT_STREAK: int = 2
-
-    def __init__(self, debug: bool = False) -> None:
+    def __init__(
+        self,
+        config: HeimdallConfig | None = None,
+        debug: bool = False,
+    ) -> None:
+        c = config
+        self._confidence_threshold: float = (
+            c.confidence_threshold if c else 0.38
+        )
+        self._hostile_cooldown_turns: int = (
+            c.hostile_cooldown if c else 2
+        )
+        self._intent_decay_silent_streak: int = (
+            c.intent_decay_silent_streak if c else 2
+        )
+        self._hostile_recovery_threshold: float = (
+            c.hostile_recovery_threshold if c else 0.5
+        )
 
         self.state: dict[str, DwellState] = {}
         self._hostile_cooldown: dict[str, int] = {}
         self._hostile_streak: dict[str, int] = {}
 
         self._predicted_silent_streak: dict[str, int] = {}
+        self._high_silent_in_intent: dict[str, int] = {}
+        self._intent_from_hostile_recovery: dict[str, bool] = {}
 
         self.debug = debug
 
@@ -59,6 +78,8 @@ class LabelDwell:
         self._hostile_cooldown[user_id] = 0
         self._hostile_streak[user_id] = 0
         self._predicted_silent_streak[user_id] = 0
+        self._high_silent_in_intent[user_id] = 0
+        self._intent_from_hostile_recovery[user_id] = False
 
     # =========================================================
 
@@ -73,14 +94,17 @@ class LabelDwell:
         if not self.debug:
             return
 
-        print(
-            f"[DWELL DEBUG] user={user_id} "
-            f"prev={prev_state} pred={predicted} "
-            f"act={activation:.2f} "
-            f"cooldown={self._hostile_cooldown[user_id]} "
-            f"hstreak={self._hostile_streak[user_id]} "
-            f"sstreak={self._predicted_silent_streak[user_id]} "
-            f"next={self.state[user_id]} final={final}"
+        logger.debug(
+            "user=%s prev=%s pred=%s act=%.2f cooldown=%s hstreak=%s sstreak=%s next=%s final=%s",
+            user_id,
+            prev_state,
+            predicted,
+            activation,
+            self._hostile_cooldown[user_id],
+            self._hostile_streak[user_id],
+            self._predicted_silent_streak[user_id],
+            self.state[user_id],
+            final,
         )
 
     # =========================================================
@@ -105,7 +129,7 @@ class LabelDwell:
 
             self.state[user_id] = DwellState.HOSTILE
             self._hostile_streak[user_id] += 1
-            self._hostile_cooldown[user_id] = self.HOSTILE_COOLDOWN
+            self._hostile_cooldown[user_id] = self._hostile_cooldown_turns
             self._predicted_silent_streak[user_id] = 0
 
             final = HOSTILE
@@ -120,17 +144,26 @@ class LabelDwell:
                 self._hostile_streak[user_id] += 1
                 final = HOSTILE
 
+            elif predicted == REQUEST and activation < self._hostile_recovery_threshold:
+                # Borderline REQUEST (e.g. "im done") in hostile context → keep HOSTILE
+                final = HOSTILE
+
             else:
-                # streak ended
+                # streak ended, clear REQUEST or SILENT
                 streak = self._hostile_streak[user_id]
 
                 if streak >= 2:
-                    # immediate recovery allowed
+                    # immediate recovery allowed only with clear REQUEST signal
                     self._hostile_streak[user_id] = 0
                     self._hostile_cooldown[user_id] = 0
 
-                    if predicted == REQUEST and activation >= CONF_THRESHOLD:
+                    if (
+                        predicted == REQUEST
+                        and activation >= self._hostile_recovery_threshold
+                    ):
                         self.state[user_id] = DwellState.INTENT
+                        self._high_silent_in_intent[user_id] = 0
+                        self._intent_from_hostile_recovery[user_id] = True
                         final = REQUEST
                     else:
                         self.state[user_id] = DwellState.IDLE
@@ -146,8 +179,13 @@ class LabelDwell:
                     else:
                         self._hostile_streak[user_id] = 0
 
-                        if predicted == REQUEST and activation >= CONF_THRESHOLD:
+                        if (
+                            predicted == REQUEST
+                            and activation >= self._hostile_recovery_threshold
+                        ):
                             self.state[user_id] = DwellState.INTENT
+                            self._high_silent_in_intent[user_id] = 0
+                            self._intent_from_hostile_recovery[user_id] = True
                             final = REQUEST
                         else:
                             self.state[user_id] = DwellState.IDLE
@@ -172,8 +210,10 @@ class LabelDwell:
 
         elif prev_state == DwellState.POST_RESET:
 
-            if predicted == REQUEST and activation >= CONF_THRESHOLD:
+            if predicted == REQUEST and activation >= self._confidence_threshold:
                 self.state[user_id] = DwellState.INTENT
+                self._high_silent_in_intent[user_id] = 0
+                self._intent_from_hostile_recovery[user_id] = False
                 final = REQUEST
             else:
                 final = SILENT
@@ -186,21 +226,34 @@ class LabelDwell:
 
             if predicted == REQUEST:
                 self._predicted_silent_streak[user_id] = 0
+                self._high_silent_in_intent[user_id] = 0
+                self._intent_from_hostile_recovery[user_id] = False
                 final = REQUEST
 
             elif predicted == SILENT:
 
-                # high-activation SILENT = acknowledgement
-                if activation >= CONF_THRESHOLD:
+                # high-activation SILENT = acknowledgement (or decay if from hostile recovery)
+                if activation >= self._confidence_threshold:
                     self._predicted_silent_streak[user_id] = 0
-                    final = REQUEST
+                    self._high_silent_in_intent[user_id] += 1
+                    if (
+                        self._high_silent_in_intent[user_id] >= 2
+                        and self._intent_from_hostile_recovery[user_id]
+                    ):
+                        self.state[user_id] = DwellState.IDLE
+                        self._high_silent_in_intent[user_id] = 0
+                        self._intent_from_hostile_recovery[user_id] = False
+                        final = SILENT
+                    else:
+                        final = REQUEST
 
                 else:
+                    self._high_silent_in_intent[user_id] = 0
                     self._predicted_silent_streak[user_id] += 1
 
                     if (
                         self._predicted_silent_streak[user_id]
-                        >= self.INTENT_DECAY_SILENT_STREAK
+                        >= self._intent_decay_silent_streak
                     ):
                         self.state[user_id] = DwellState.IDLE
                         final = SILENT
@@ -210,7 +263,7 @@ class LabelDwell:
             elif predicted == HOSTILE:
                 self.state[user_id] = DwellState.HOSTILE
                 self._hostile_streak[user_id] = 1
-                self._hostile_cooldown[user_id] = self.HOSTILE_COOLDOWN
+                self._hostile_cooldown[user_id] = self._hostile_cooldown_turns
                 final = HOSTILE
 
             elif predicted == TOPIC_RESET:
@@ -223,7 +276,7 @@ class LabelDwell:
 
         elif prev_state == DwellState.IDLE:
 
-            if predicted == REQUEST and activation >= CONF_THRESHOLD:
+            if predicted == REQUEST and activation >= self._confidence_threshold:
                 self.state[user_id] = DwellState.INTENT
                 final = REQUEST
             else:

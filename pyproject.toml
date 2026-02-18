@@ -3,6 +3,8 @@ name = "heimdall"
 version = "0.1.0"
 description = "Conversation gatekeeper with dwell-based routing"
 authors = ["Siddiq Hussain"]
+license = "MIT"
+readme = "README.md"
 
 packages = [
     { include = "heimdall" }
@@ -15,7 +17,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 numpy = ">=1.21.4"
 scikit-learn = ">=1.0.2"
 sentence-transformers = ">=2.4.1"

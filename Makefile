@@ -17,9 +17,9 @@ test:
 test-strict-quite:
 	poetry run pytest -q --maxfail=1
 
-# Stop at first failure
+# Stop at first failure, with heimdall logging enabled
 test-strict:
-	poetry run pytest --maxfail=1
+	poetry run pytest --maxfail=1 --log-heimdall=DEBUG
 
 # Lint + normal test
 check: lint test

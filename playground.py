@@ -1,5 +1,6 @@
 # playground.py
 
+import logging
 import string
 import time
 from pathlib import Path
@@ -23,6 +24,8 @@ from heimdall.core.types import (
     SystemAction,
 )
 
+logger = logging.getLogger("heimdall.playground")
+
 # ------------------------------------------------------------------
 # Config
 # ------------------------------------------------------------------
@@ -34,8 +37,8 @@ config = HeimdallConfig(state_dir=STATE_DIR)
 
 embedder: Embedder = Embedder()
 clf: Classifier = Classifier(config=config)
-dwell = LabelDwell()
-learning_gate = LearningGate()
+dwell = LabelDwell(config=config)
+learning_gate = LearningGate(config=config)
 
 user_id: str = "test_user"
 
@@ -88,23 +91,29 @@ def main() -> None:
         predicted, conf, activation = clf.predict(vec, user_id, text=text)
 
         dwell_label = dwell.apply(user_id, predicted, activation)
-        final: Label = decide(dwell_label, conf)
+        final: Label = decide(
+            dwell_label,
+            conf,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         action: SystemAction = route(final)
 
         # ---- minimal playground affordance (UX only) ----
         if final == SILENT:
-            print(f"[{final} | {conf:.2f}] → {NO_RESPONSE}")
-            print("→ What would you like help with?")
+            logger.info("[%s | %.2f] → %s", final, conf, NO_RESPONSE)
+            logger.info("→ What would you like help with?")
         else:
-            print(f"[{final} | {conf:.2f}] → {action}")
+            logger.info("[%s | %.2f] → %s", final, conf, action)
 
         # ---- outcome inference (updated) ----
         outcome: Outcome = NONE
         if prev_label is not None:
             outcome = infer_outcome(
-                next_input=text,
                 confidence=conf,
+                next_input=text,
+                confidence_threshold=config.outcome_escalated_confidence_threshold,
+                min_next_len=config.outcome_escalated_min_next_len,
             )
 
         # ---- learning gate (single authority) ----
@@ -140,4 +149,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    import heimdall
+
+    heimdall.configure_logging(level=logging.INFO)
     main()

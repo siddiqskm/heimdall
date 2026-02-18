@@ -29,7 +29,7 @@ def test_long_session_stability(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell(debug=True)
+    dwell = LabelDwell(config=config, debug=True)
 
     user_id = "long_session_user"
 
@@ -73,7 +73,11 @@ def test_long_session_stability(tmp_path: Path) -> None:
 
         predicted, confidence, activation = clf.predict(vector, user_id)
         dwell_label = dwell.apply(user_id, predicted, activation)
-        final_label = decide(dwell_label, confidence)
+        final_label = decide(
+            dwell_label,
+            confidence,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         # Track events
         if final_label == HOSTILE:

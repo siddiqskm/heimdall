@@ -59,7 +59,7 @@ def test_baseline(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user_id = "baseline_user"
 
@@ -73,7 +73,11 @@ def test_baseline(tmp_path: Path) -> None:
         dwell_label = dwell.apply(user_id, predicted, activation)
 
         # final decision gate
-        final_label = decide(dwell_label, confidence)
+        final_label = decide(
+            dwell_label,
+            confidence,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         print(
             f"{text!r} → {final_label} "

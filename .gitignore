@@ -144,6 +144,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Heimdall local state (playground, examples, training output)
+state/
+.playground_state/
+
 # Spyder project settings
 .spyderproject
 .spyproject

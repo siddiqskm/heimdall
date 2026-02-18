@@ -20,7 +20,7 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user = "learning_user_reclassify"
 
@@ -38,7 +38,11 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
     # BEFORE learning
     # --------------------------------------------------
     predicted_w1, conf_w1, act_w1 = clf.predict(vec_weak, user)
-    label_w1 = decide(dwell.apply(user, predicted_w1, act_w1), conf_w1)
+    label_w1 = decide(
+        dwell.apply(user, predicted_w1, act_w1),
+        conf_w1,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[before learning] weak → {label_w1} (conf={conf_w1:.3f})")
 
@@ -47,7 +51,11 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
     # --------------------------------------------------
     for _ in range(6):
         predicted_s, conf_s, act_s = clf.predict(vec_strong, user)
-        label_s = decide(dwell.apply(user, predicted_s, act_s), conf_s)
+        label_s = decide(
+            dwell.apply(user, predicted_s, act_s),
+            conf_s,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         assert label_s == REQUEST
 
@@ -63,7 +71,11 @@ def test_online_learning_strengthens_request_bias(tmp_path: Path) -> None:
     # AFTER learning
     # --------------------------------------------------
     predicted_w2, conf_w2, act_w2 = clf.predict(vec_weak, user)
-    label_w2 = decide(dwell.apply(user, predicted_w2, act_w2), conf_w2)
+    label_w2 = decide(
+        dwell.apply(user, predicted_w2, act_w2),
+        conf_w2,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[after learning] weak → {label_w2} (conf={conf_w2:.3f})")
 

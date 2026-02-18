@@ -26,7 +26,7 @@ def test_real_long_conversation(tmp_path: Path):
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user = "real_chat_user"
 
@@ -123,7 +123,11 @@ def test_real_long_conversation(tmp_path: Path):
 
         predicted, confidence, activation = clf.predict(vec, user)
         dwell_label = dwell.apply(user, predicted, activation)
-        final_label = decide(dwell_label, confidence)
+        final_label = decide(
+            dwell_label,
+            confidence,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         print(
             f"{index:02d} | {text!r} → {final_label} "

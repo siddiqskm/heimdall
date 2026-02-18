@@ -2,6 +2,7 @@
 
 import time
 
+from heimdall.core.config import HeimdallConfig
 from heimdall.core.types import (
     ALLOW_PROGRESS,
     ESCALATED,
@@ -20,10 +21,17 @@ class LearningGate:
 
     def __init__(
         self,
+        config: HeimdallConfig | None = None,
+        *,
         min_confidence: float = 0.35,
         min_stable_turns: int = 2,
         min_interval_sec: float = 30.0,
     ) -> None:
+        if config is not None:
+            min_confidence = config.learning_gate_min_confidence
+            min_stable_turns = config.learning_gate_min_stable_turns
+            min_interval_sec = config.learning_gate_min_interval_sec
+
         self.min_confidence = min_confidence
         self.min_stable_turns = min_stable_turns
         self.min_interval_sec = min_interval_sec

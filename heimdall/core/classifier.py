@@ -1,5 +1,6 @@
 # heimdall/core/classifier.py
 
+import logging
 from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,6 +35,8 @@ from heimdall.core.types import (
 type UserID = str
 type EmbeddingVector = NDArray[np.float64]
 type BiasVector = NDArray[np.float64]
+
+logger = logging.getLogger(__name__)
 
 
 # ==========================================================
@@ -281,13 +284,13 @@ class Classifier:
         # --------------------------------------------------------------
 
         if score_label != lr_label:
-            print(
-                f"[Heimdall Drift] "
-                f"LR={lr_label} "
-                f"SCORE={score_label} | "
-                f"H={scores.hostile_score:.2f} "
-                f"R={scores.reset_score:.2f} "
-                f"U={scores.utility_score:.2f}"
+            logger.debug(
+                "Drift LR=%s SCORE=%s H=%.2f R=%.2f U=%.2f",
+                lr_label,
+                score_label,
+                scores.hostile_score,
+                scores.reset_score,
+                scores.utility_score,
             )
 
         # --------------------------------------------------------------
@@ -322,10 +325,10 @@ class Classifier:
         if label == SILENT:
             return
 
-        if confidence >= 0.55:
+        if confidence >= self.config.session_proto_add_threshold:
             self.session_prototypes.add(label, vector)
 
-        if confidence >= 0.65:
+        if confidence >= self.config.user_proto_add_threshold:
             self.user_prototypes.add(label, vector)
 
     def update_bias(

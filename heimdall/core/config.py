@@ -28,6 +28,24 @@ class HeimdallConfig:
     user_proto_limit: int = 15
     offline_proto_limit: int = 50
 
+    # ---- prototype add thresholds (when to add to session/user store) ----
+    session_proto_add_threshold: float = 0.55
+    user_proto_add_threshold: float = 0.65
+
+    # ------------------------------------------------------------------
+    # Decision gate (SILENT → REQUEST when confidence below this)
+    # ------------------------------------------------------------------
+
+    confidence_threshold: float = 0.38
+
+    # ------------------------------------------------------------------
+    # Dwell FSM
+    # ------------------------------------------------------------------
+
+    hostile_cooldown: int = 2
+    intent_decay_silent_streak: int = 2
+    hostile_recovery_threshold: float = 0.5
+
     # ------------------------------------------------------------------
     # Score-based thresholds
     # ------------------------------------------------------------------
@@ -45,6 +63,21 @@ class HeimdallConfig:
     novelty_weight: float = 0.50
     info_density_weight: float = 0.30
     richness_weight: float = 0.20
+
+    # ------------------------------------------------------------------
+    # Learning gate (when to allow learning side-effects)
+    # ------------------------------------------------------------------
+
+    learning_gate_min_confidence: float = 0.35
+    learning_gate_min_stable_turns: int = 2
+    learning_gate_min_interval_sec: float = 30.0
+
+    # ------------------------------------------------------------------
+    # Outcome inference (adapt)
+    # ------------------------------------------------------------------
+
+    outcome_escalated_confidence_threshold: float = 0.4
+    outcome_escalated_min_next_len: int = 20
 
     # ------------------------------------------------------------------
     # Runtime state paths (user-scoped)

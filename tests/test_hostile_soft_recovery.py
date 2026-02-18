@@ -23,7 +23,7 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user = "hostile_recovery_user"
 
@@ -34,7 +34,11 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     vec_s = embedder.encode(strong)
 
     predicted1, conf1, act1 = clf.predict(vec_s, user)
-    label1 = decide(dwell.apply(user, predicted1, act1), conf1)
+    label1 = decide(
+        dwell.apply(user, predicted1, act1),
+        conf1,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[intent] label={label1} conf={conf1:.2f}")
     assert label1 == REQUEST
@@ -46,7 +50,11 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     vec_h = embedder.encode(hostile)
 
     predicted2, conf2, act2 = clf.predict(vec_h, user)
-    label2 = decide(dwell.apply(user, predicted2, act2), conf2)
+    label2 = decide(
+        dwell.apply(user, predicted2, act2),
+        conf2,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[hostile] label={label2} conf={conf2:.2f}")
     assert label2 == HOSTILE
@@ -58,7 +66,11 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     vec_c = embedder.encode(calm)
 
     predicted3, conf3, act3 = clf.predict(vec_c, user)
-    label3 = decide(dwell.apply(user, predicted3, act3), conf3)
+    label3 = decide(
+        dwell.apply(user, predicted3, act3),
+        conf3,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[cooldown-1] label={label3} conf={conf3:.2f}")
     assert label3 == HOSTILE  # still suppressed
@@ -70,7 +82,11 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     vec_c2 = embedder.encode(calm2)
 
     predicted4, conf4, act4 = clf.predict(vec_c2, user)
-    label4 = decide(dwell.apply(user, predicted4, act4), conf4)
+    label4 = decide(
+        dwell.apply(user, predicted4, act4),
+        conf4,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[cooldown-2] label={label4} conf={conf4:.2f}")
     assert label4 == HOSTILE  # last suppressed turn
@@ -79,7 +95,11 @@ def test_soft_hostile_recovery_flow(tmp_path: Path) -> None:
     # Step 5: productive intent recovers
     # -------------------------
     predicted5, conf5, act5 = clf.predict(vec_s, user)
-    label5 = decide(dwell.apply(user, predicted5, act5), conf5)
+    label5 = decide(
+        dwell.apply(user, predicted5, act5),
+        conf5,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[recovered] label={label5} conf={conf5:.2f}")
     assert label5 == REQUEST

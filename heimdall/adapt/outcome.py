@@ -12,12 +12,15 @@ from heimdall.core.types import (
 def infer_outcome(
     confidence: float,
     next_input: str | None,
+    *,
+    confidence_threshold: float = 0.4,
+    min_next_len: int = 20,
 ) -> Outcome:
     if next_input is None:
         return NONE
 
     # user escalated after minimal acknowledgement
-    if confidence < 0.4 and len(next_input) > 20:
+    if confidence < confidence_threshold and len(next_input) > min_next_len:
         return ESCALATED
 
     return CONTINUED

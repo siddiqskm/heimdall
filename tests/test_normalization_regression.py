@@ -89,7 +89,7 @@ def test_realistic_conversation_flow(tmp_path: Path) -> None:
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user_id = "conversation_user"
 
@@ -98,7 +98,11 @@ def test_realistic_conversation_flow(tmp_path: Path) -> None:
 
         predicted, confidence, activation = clf.predict(vector, user_id)
         dwell_label = dwell.apply(user_id, predicted, activation)
-        final_label = decide(dwell_label, confidence)
+        final_label = decide(
+            dwell_label,
+            confidence,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         print(
             f"{index:02d} | {text!r} → {final_label} "

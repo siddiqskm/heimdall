@@ -20,7 +20,7 @@ def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Pat
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user = "dwell_user"
 
@@ -42,7 +42,11 @@ def test_request_does_not_break_on_acknowledgements_after_learning(tmp_path: Pat
         predicted, conf, activation = clf.predict(vec, user)
 
         dwell_label = dwell.apply(user, predicted, activation)
-        final_label = decide(dwell_label, conf)
+        final_label = decide(
+            dwell_label,
+            conf,
+            confidence_threshold=config.confidence_threshold,
+        )
 
         labels.append(final_label)
 

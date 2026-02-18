@@ -21,7 +21,7 @@ def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> No
 
     embedder = Embedder()
     clf = Classifier(config=config)
-    dwell = LabelDwell()
+    dwell = LabelDwell(config=config)
 
     user = "decay_user"
 
@@ -32,7 +32,11 @@ def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> No
     # Step 1: baseline
     # -------------------------
     predicted1, conf1, act1 = clf.predict(vec, user)
-    label1 = decide(dwell.apply(user, predicted1, act1), conf1)
+    label1 = decide(
+        dwell.apply(user, predicted1, act1),
+        conf1,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[baseline] label={label1} conf={conf1:.2f}")
 
@@ -52,7 +56,11 @@ def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> No
         )
 
     predicted2, conf2, act2 = clf.predict(vec, user)
-    label2 = decide(dwell.apply(user, predicted2, act2), conf2)
+    label2 = decide(
+        dwell.apply(user, predicted2, act2),
+        conf2,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[after learning] label={label2} conf={conf2:.2f}")
 
@@ -66,7 +74,11 @@ def test_online_learning_bias_decays_without_reinforcement(tmp_path: Path) -> No
         clf._apply_decay(user)
 
     predicted3, conf3, act3 = clf.predict(vec, user)
-    label3 = decide(dwell.apply(user, predicted3, act3), conf3)
+    label3 = decide(
+        dwell.apply(user, predicted3, act3),
+        conf3,
+        confidence_threshold=config.confidence_threshold,
+    )
 
     print(f"[after decay] label={label3} conf={conf3:.2f}")
 
