@@ -202,6 +202,12 @@ DATA: list[tuple[str, Label]] = [
     ("ignore what we talked about", TOPIC_RESET),
     ("lets not talk about that anymore", TOPIC_RESET),
     ("move on to something else", TOPIC_RESET),
+    ("lets switch to something else", TOPIC_RESET),
+    # Diverse semantic anchors (mood / boredom / redirect) — not exact user phrases
+    ("not in the mood for this", TOPIC_RESET),
+    ("bored of this topic", TOPIC_RESET),
+    ("can we change what we're discussing", TOPIC_RESET),
+    ("no, switch to something different", TOPIC_RESET),
 
     # -----------------
     # HOSTILE

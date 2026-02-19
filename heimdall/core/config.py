@@ -22,7 +22,7 @@ class HeimdallConfig:
     # ---- prototype thresholds ----
     session_proto_threshold: float = 0.75
     user_proto_threshold: float = 0.80
-    offline_proto_threshold: float = 0.85
+    offline_proto_threshold: float = 0.80
 
     # ---- prototype limits ----
     session_proto_limit: int = 5
@@ -52,8 +52,12 @@ class HeimdallConfig:
     # ------------------------------------------------------------------
 
     hostile_threshold: float = 0.80
-    reset_threshold: float = 0.75
+    reset_threshold: float = 0.65
     utility_silent_threshold: float = 0.40
+
+    # ---- soft nearest-neighbor fallback (when LR confidence is low) ----
+    lr_low_confidence_threshold: float = 0.45
+    soft_proto_threshold: float = 0.65
 
     # ------------------------------------------------------------------
     # Score weights
