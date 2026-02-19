@@ -242,6 +242,11 @@ class Classifier:
                 lr_label == REQUEST
                 and proto_label == SILENT
             )
+            # Don't override REQUEST -> TOPIC_RESET; "lets discuss X" can match "lets discuss something else"
+            and not (
+                lr_label == REQUEST
+                and proto_label == TOPIC_RESET
+            )
         ):
             self._update_context(vector)
             return Prediction(
@@ -260,13 +265,41 @@ class Classifier:
         score_label: Label = lr_label
         confidence: float = lr_conf
 
+        # Soft nearest-neighbor fallback when LR is uncertain
+        if lr_conf < self.config.lr_low_confidence_threshold:
+            soft_label, soft_sim = self.offline_prototypes.match(
+                vector,
+                threshold=self.config.soft_proto_threshold,
+            )
+            # Don't override REQUEST -> TOPIC_RESET; "lets discuss X" can resemble "lets discuss something else"
+            if (
+                soft_label is not None
+                and soft_label != lr_label
+                and not (lr_label == REQUEST and soft_label == TOPIC_RESET)
+            ):
+                logger.debug(
+                    "Soft-proto override: LR=%s(%.2f) -> %s(%.2f)",
+                    lr_label,
+                    lr_conf,
+                    soft_label,
+                    soft_sim,
+                )
+                score_label = soft_label
+                confidence = soft_sim
+
         # 1. Hostile override (strongest)
         if scores.hostile_score >= self.config.hostile_threshold:
             score_label = HOSTILE
             confidence = scores.hostile_score
 
-        # 2. Reset override (conservative)
-        elif scores.reset_score >= self.config.reset_threshold:
+        # 2. Reset override: trust score when LR is uncertain or did not say REQUEST
+        elif (
+            scores.reset_score >= self.config.reset_threshold
+            and (
+                lr_label != REQUEST
+                or lr_conf < self.config.lr_low_confidence_threshold
+            )
+        ):
             score_label = TOPIC_RESET
             confidence = scores.reset_score
 
