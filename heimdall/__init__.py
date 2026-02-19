@@ -46,13 +46,31 @@ __all__ = [
     "default_config",
     "route",
     "configure_logging",
+    "set_log_level",
 ]
 
 # Prevent "no handler" warnings when the package is used without configuring logging.
-# Applications that want output should call configure_logging() once.
 _logger = logging.getLogger("heimdall")
 if not _logger.handlers:
     _logger.addHandler(logging.NullHandler())
+
+
+def set_log_level(level: int) -> None:
+    """
+    Set the heimdall logger level only. Use this when heimdall runs inside a host app
+    (Cog, web server, etc.) that configures logging itself.
+
+    This does not add handlers or set propagate=False. Logs from heimdall will
+    propagate to the root logger and appear wherever your app routes them (e.g. a
+    single log file). If you call configure_logging() instead, heimdall attaches its
+    own handlers and sets propagate=False, so logs will not reach your app's handlers.
+
+    Example (in your Cog predictor or app startup):
+        import logging
+        from heimdall import set_log_level
+        set_log_level(logging.INFO)  # or logging.DEBUG
+    """
+    _logger.setLevel(level)
 
 # Default format for file handler (includes timestamp); console can stay minimal.
 _DEFAULT_FILE_FORMAT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
@@ -78,11 +96,13 @@ def configure_logging(
     also_configure: list[str] | None = None,
 ) -> None:
     """
-    Configure logging for the heimdall package.
+    Configure logging for the heimdall package (standalone scripts only).
 
-    Call this once from your application (or script) if you want heimdall
-    log messages to be emitted. When running in the background (e.g. behind a
-    chat API), prefer setting log_file so logs are written to a file.
+    Adds heimdall-owned handlers (console and/or file) and sets propagate=False, so
+    heimdall logs do not propagate to the root logger. Do not use when heimdall is
+    embedded in a host app (Cog, web server, etc.) that configures its own logging:
+    use set_log_level(level) instead so logs propagate to your app's handlers and
+    appear in your app's log file.
 
     Args:
         level: Log level for the heimdall logger (default INFO).

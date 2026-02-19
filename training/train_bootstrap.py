@@ -297,6 +297,7 @@ def main(models_dir: Path) -> None:
     # --------------------------------------------------------------
     # Persist offline prototypes (package-scoped)
     # --------------------------------------------------------------
+    config.offline_prototypes_path.parent.mkdir(parents=True, exist_ok=True)
     with config.offline_prototypes_path.open(
         "w", encoding="utf-8"
     ) as f:

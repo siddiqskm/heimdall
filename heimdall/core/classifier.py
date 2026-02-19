@@ -290,9 +290,8 @@ class Classifier:
 
         self._update_context(vector)
 
-        # --------------------------------------------------------------
-        # Final Prediction
-        # --------------------------------------------------------------
+        # Persist state so delta.json and prototypes.json exist (e.g. in Cog)
+        self.persist()
 
         return Prediction(
             score_label,

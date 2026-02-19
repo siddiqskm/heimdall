@@ -7,11 +7,45 @@ from pathlib import Path
 
 from heimdall.core.classifier import Classifier
 from heimdall.core.config import HeimdallConfig
+from heimdall.core.decision import decide
 from heimdall.core.dwell import DwellState, LabelDwell
 from heimdall.core.embedder import Embedder
+from heimdall.core.router import route
 from heimdall.core.types import LABEL_TO_ID, REQUEST
 
 logger = logging.getLogger(__name__)
+
+
+def test_pipeline_creates_chat_files_without_explicit_persist(tmp_path: Path) -> None:
+    """
+    Pipeline (predict + dwell.apply) must create delta.json, prototypes.json, and dwell.json
+    without the caller calling persist(). This is how embedded use (e.g. Cog) works.
+    Regresses if auto-persist is removed from Classifier.predict() or LabelDwell.apply().
+    """
+    config = HeimdallConfig(state_dir=tmp_path / ".heimdall")
+    embedder = Embedder()
+    clf = Classifier(config=config, chat_id="embedded_chat")
+    dwell = LabelDwell(config=config, chat_id=clf.chat_id)
+
+    # Run one turn: no explicit persist() anywhere
+    vec = embedder.encode("lets discuss auth")
+    pred = clf.predict(vec)
+    dwell_label = dwell.apply(pred.label, pred.activation)
+    decide(dwell_label, pred.confidence, confidence_threshold=config.confidence_threshold)
+    route(dwell_label)
+
+    chat_dir = config.chat_dir(clf.chat_id)
+    assert (chat_dir / "delta.json").exists(), "Classifier.predict() should auto-persist delta.json"
+    assert (chat_dir / "prototypes.json").exists(), "Classifier.predict() should auto-persist prototypes.json"
+    assert (chat_dir / "dwell.json").exists(), "LabelDwell.apply() should auto-persist dwell.json"
+
+    with open(chat_dir / "delta.json") as f:
+        assert isinstance(json.load(f), list)
+    with open(chat_dir / "prototypes.json") as f:
+        assert isinstance(json.load(f), dict)
+    with open(chat_dir / "dwell.json") as f:
+        data = json.load(f)
+    assert "state" in data
 
 
 def test_one_blob_per_chat_id_classifier(tmp_path: Path) -> None:

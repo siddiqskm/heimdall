@@ -333,4 +333,5 @@ class LabelDwell:
             self._consecutive_count = 1
 
         self._debug(prev_state, predicted, activation, final)
+        self.persist()
         return final

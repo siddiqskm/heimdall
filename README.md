@@ -125,7 +125,7 @@ Only `state_dir` is required; everything else has defaults. Per-chat state is st
 
 ```python
 from pathlib import Path
-from heimdall.core.config import HeimdallConfig, default_config
+from heimdall import HeimdallConfig, default_config
 
 # Default: ~/.heimdall
 config = default_config()
@@ -140,6 +140,8 @@ Under `state_dir` the package keeps **one directory per chat**: `state_dir/chats
 - `prototypes.json` – user prototypes for this chat
 - `dwell.json` – FSM state (when using LabelDwell with config)
 
+These files are written automatically after each `Classifier.predict()` and `LabelDwell.apply()`, so the chat directory is populated as soon as you run the pipeline (no need to call `persist()` yourself in host apps like Cog).
+
 Call `config.delete_chat_state(chat_id)` when a chat is closed so state is not kept forever (caller or a job is responsible).
 
 Key options (see `HeimdallConfig` in `heimdall/core/config.py`):
@@ -153,39 +155,44 @@ Key options (see `HeimdallConfig` in `heimdall/core/config.py`):
 
 ## Logging
 
-Heimdall follows the usual Python library pattern:
+Heimdall uses the `"heimdall"` logger and does not add real handlers by default (only a `NullHandler` to avoid "no handler" warnings). Choose one of two patterns depending on how you run heimdall.
 
-- **No handlers by default** – the package attaches a `NullHandler` to the `"heimdall"` logger so nothing is emitted until the app configures logging.
-- **Your app** (or a script like the playground) should enable output by calling `heimdall.configure_logging()` once.
+### Host apps (recommended when heimdall is embedded)
 
-Because the package often runs in the background (e.g. behind a chat API), **writing to a log file** is supported and recommended for production:
+When heimdall runs inside another application that configures logging (Cog, a web server, etc.), **do not call `configure_logging()`**. That function attaches heimdall-owned handlers and sets `propagate=False`, so heimdall logs never reach your app’s root logger or file handler and a separate heimdall log file will not appear where you expect.
+
+**Use `set_log_level()` only.** Then heimdall logs propagate to the root logger and go wherever your app routes them (e.g. a single app log file).
 
 ```python
-import heimdall
+import logging
+from heimdall import set_log_level
 
-# Console only (default)
-heimdall.configure_logging()
-
-# Default log file: ~/.heimdall/heimdall.log (creates dir if needed)
-heimdall.configure_logging(log_file=True)
-
-# Log file in a different directory (e.g. custom state_dir)
-heimdall.configure_logging(log_file=True, log_dir="/var/log/heimdall")
-
-# Explicit log file path; creates parent dirs
-heimdall.configure_logging(log_file="/var/log/heimdall/app.log", use_console=False)
-
-# Both console and file
-heimdall.configure_logging(log_file=True)
+# In your app startup or Cog predictor setup:
+set_log_level(logging.INFO)   # or logging.DEBUG
 ```
 
-Options:
+Your app configures handlers (file, stream, etc.) on the root logger or on `"heimdall"` as usual; heimdall only needs its level set so that records are emitted and propagated.
 
-- **`log_file`** – If `True`, a file handler is added at `(log_dir or ~/.heimdall)/heimdall.log`. If a path (str or Path), that path is used. If `None` or `False`, no file.
-- **`log_dir`** – When `log_file=True`, directory for the log file (default `~/.heimdall`). Ignored when `log_file` is an explicit path.
-- **`use_console`** – If `True` (default) and no custom `handler` is passed, a `StreamHandler` (stderr) is added. Set to `False` when you only want file output.
-- **`handler`** – Optional single handler to use instead of the default stream (and/or file when `log_file` is set).
-- **`also_configure`** – Optional list of logger names (e.g. `["tests"]`) to attach the same handlers to, so those loggers emit to the same place.
+### Standalone scripts
+
+When heimdall is the main process (e.g. playground, a small script), you can call `configure_logging()` so heimdall adds its own console and/or file handlers:
+
+```python
+from heimdall import configure_logging
+
+# Console only (default)
+configure_logging()
+
+# Default log file: ~/.heimdall/heimdall.log
+configure_logging(log_file=True)
+
+# Custom path
+configure_logging(log_file=True, log_dir="/var/log/heimdall")
+```
+
+Options: **`log_file`** – `True` for default path, or a path (str/Path). **`log_dir`** – when `log_file=True`, directory (default `~/.heimdall`). **`use_console`** – add stderr handler (default `True`). **`handler`** – single custom handler. **`also_configure`** – list of logger names to attach the same handlers to.
+
+See [docs/LOGGING.md](docs/LOGGING.md) for more detail on host-app vs standalone integration.
 
 ---
 
