@@ -15,17 +15,17 @@ from pathlib import Path
 
 from heimdall import (
     ALLOW_PROGRESS,
+    NO_RESPONSE,
+    RESET_CONTEXT,
+    SUPPRESS,
     Classifier,
     Embedder,
     HeimdallConfig,
     LabelDwell,
-    NO_RESPONSE,
-    RESET_CONTEXT,
-    SUPPRESS,
     SystemAction,
+    configure_logging,
     decide,
     route,
-    configure_logging,
 )
 
 # ---------------------------------------------------------------------------
