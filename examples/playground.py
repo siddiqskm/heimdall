@@ -1,4 +1,4 @@
-# playground.py
+# examples/playground.py
 
 import logging
 import string

@@ -1,5 +1,15 @@
 # Examples
 
+## playground.py
+
+Interactive demo: type messages and see labels and system actions. Uses the full pipeline (embed → classify → dwell → decide → route) plus optional learning (bias updates). State is written to `.playground_state/` in the repo root. Exit with `/exit`, `/q`, or `/quit`.
+
+**Run from repo root:**
+
+```bash
+poetry run python examples/playground.py
+```
+
 ## gatekeeper_bot.py
 
 Shows how to use heimdall as a **gate in front of your assistant** (LLM, API, or rule-based backend).
