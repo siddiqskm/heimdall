@@ -58,14 +58,14 @@ if not _logger.handlers:
 def set_log_level(level: int) -> None:
     """
     Set the heimdall logger level only. Use this when heimdall runs inside a host app
-    (Cog, web server, etc.) that configures logging itself.
+    (e.g. a web server or API) that configures logging itself.
 
     This does not add handlers or set propagate=False. Logs from heimdall will
     propagate to the root logger and appear wherever your app routes them (e.g. a
     single log file). If you call configure_logging() instead, heimdall attaches its
     own handlers and sets propagate=False, so logs will not reach your app's handlers.
 
-    Example (in your Cog predictor or app startup):
+    Example (in your app startup):
         import logging
         from heimdall import set_log_level
         set_log_level(logging.INFO)  # or logging.DEBUG
@@ -100,7 +100,7 @@ def configure_logging(
 
     Adds heimdall-owned handlers (console and/or file) and sets propagate=False, so
     heimdall logs do not propagate to the root logger. Do not use when heimdall is
-    embedded in a host app (Cog, web server, etc.) that configures its own logging:
+    embedded in a host app (e.g. web server or API) that configures its own logging:
     use set_log_level(level) instead so logs propagate to your app's handlers and
     appear in your app's log file.
 
