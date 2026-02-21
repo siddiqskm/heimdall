@@ -25,7 +25,7 @@ No handlers are added and `propagate` stays `True` (the default). Logs from `hei
 
 ## Standalone scripts
 
-When heimdall is the main script (playground, one-off script), it is fine to call `configure_logging()` so heimdall adds its own handlers and controls its own output:
+When heimdall is the main script (e.g. `examples/playground.py`, or a one-off script), it is fine to call `configure_logging()` so heimdall adds its own handlers and controls its own output:
 
 ```python
 from heimdall import configure_logging

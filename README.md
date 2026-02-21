@@ -4,7 +4,9 @@
   <img src="assets/heimdall-logo.png" alt="Heimdall" width="360" />
 </div>
 
-**Conversation gatekeeper with dwell-based routing.** Classifies user turns and maps them to system actions (allow progress, suppress, reset context, or no response).
+**Stateful conversation gatekeeper for LLM systems.**
+
+Heimdall classifies user intent and decides whether to allow, suppress, or reset context — preventing wasted tokens, handling hostility, and stabilizing intent across conversations.
 
 - **Python 3.12+**
 - **Poetry** for install and dev
@@ -145,7 +147,7 @@ action = route(final_label)
 Interactive loop using the same pipeline plus optional learning:
 
 ```bash
-poetry run python playground.py
+poetry run python examples/playground.py
 ```
 
 Logging is enabled when the script is run; it uses `heimdall.configure_logging()` so you see classification and actions.
@@ -295,7 +297,7 @@ poetry run python training/train_bootstrap.py --models-dir ./heimdall/models
 4. Writes **`lr.joblib`** to `{models-dir}/lr.joblib` (e.g. `./heimdall/models/lr.joblib`).
 5. Builds **offline prototypes** from the same DATA and writes **`prototypes_offline.json`** to the package `heimdall/assets/` directory (used at runtime for prototype-based scoring).
 
-After training, the package will use the new `lr.joblib` when `models_dir` points at that directory (or when using the default in-package `heimdall/models/`). Restart any running process (e.g. playground) so it loads the updated model.
+After training, the package will use the new `lr.joblib` when `models_dir` points at that directory (or when using the default in-package `heimdall/models/`). Restart any running process (e.g. `examples/playground.py`) so it loads the updated model.
 
 ### Training data
 
@@ -335,12 +337,11 @@ heimdall/
 │   ├── adapt/               # outcome inference, learning gate, config (DECAY, MAX_BIAS)
 │   ├── assets/              # prototypes_offline.json
 │   └── models/              # lr.joblib
-├── examples/                # gatekeeper_bot.py integration example
+├── examples/                # gatekeeper_bot.py, playground.py
 ├── docs/                    # DATA_AND_TRAINING.md
 ├── tests/
 ├── training/                # train_bootstrap.py
 ├── benchmarks/
-├── playground.py            # interactive demo
 ├── LICENSE                  # MIT
 ├── pyproject.toml
 └── Makefile
