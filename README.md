@@ -1,5 +1,9 @@
 # heimdall
 
+<div align="center">
+  <img src="assets/heimdall-logo.png" alt="Heimdall" width="360" />
+</div>
+
 **Conversation gatekeeper with dwell-based routing.** Classifies user turns and maps them to system actions (allow progress, suppress, reset context, or no response).
 
 - **Python 3.12+**
