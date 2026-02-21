@@ -323,7 +323,7 @@ class Classifier:
 
         self._update_context(vector)
 
-        # Persist state so delta.json and prototypes.json exist (e.g. in Cog)
+        # Persist state so delta.json and prototypes.json exist (e.g. when embedded)
         self.persist()
 
         return Prediction(

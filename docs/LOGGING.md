@@ -2,7 +2,7 @@
 
 Heimdall uses the standard library `logging` module under the logger name `"heimdall"`. How you enable output depends on whether heimdall runs as a **standalone** process or inside a **host application**.
 
-## Host applications (Cog, web apps, etc.)
+## Host applications
 
 When heimdall is used as a library inside an app that already configures logging, **do not call `configure_logging()`**. That function:
 
@@ -17,7 +17,7 @@ So heimdall logs never reach the root logger and will not appear in your app’s
 import logging
 from heimdall import set_log_level
 
-# Once at startup (e.g. in Cog predictor setup(), or app init):
+# Once at startup (e.g. in your app init):
 set_log_level(logging.INFO)   # or logging.DEBUG
 ```
 

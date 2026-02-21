@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def test_pipeline_creates_chat_files_without_explicit_persist(tmp_path: Path) -> None:
     """
     Pipeline (predict + dwell.apply) must create delta.json, prototypes.json, and dwell.json
-    without the caller calling persist(). This is how embedded use (e.g. Cog) works.
+    without the caller calling persist(). This is how embedded use works.
     Regresses if auto-persist is removed from Classifier.predict() or LabelDwell.apply().
     """
     config = HeimdallConfig(state_dir=tmp_path / ".heimdall")

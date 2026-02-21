@@ -61,6 +61,45 @@ Requires **Python 3.12**. The package ships with a pre-trained LR model and offl
 
 ---
 
+## Integration
+
+Use heimdall as a dependency in your own project (Python 3.12+).
+
+### From PyPI (when published)
+
+```bash
+pip install heimdall
+# or with Poetry
+poetry add heimdall
+```
+
+Then import from the top level and follow the [Quick start](#quick-start) pattern: create a `HeimdallConfig`, `Embedder`, `Classifier`, and `LabelDwell` (per chat), run `embed → predict → dwell.apply → decide → route` per message.
+
+### From Git
+
+To depend on the repo directly (e.g. a specific branch or before a PyPI release), add heimdall as a Git dependency.
+
+**Poetry** (`pyproject.toml`):
+
+```toml
+[tool.poetry.dependencies]
+heimdall = { git = "https://github.com/siddiqskm/heimdall.git" }
+# or SSH, e.g.:
+# heimdall = { git = "git@github.com:siddiqskm/heimdall.git" }
+```
+
+Then run `poetry install`. Use the same imports and API as with the PyPI package.
+
+**pip** (from a clone or editable install):
+
+```bash
+pip install -e /path/to/heimdall
+# or from repo URL (no editable):
+pip install git+https://github.com/siddiqskm/heimdall.git
+```
+
+---
+
 ## Quick start
 
 ### As a library
@@ -144,7 +183,7 @@ Under `state_dir` the package keeps **one directory per chat**: `state_dir/chats
 - `prototypes.json` – user prototypes for this chat
 - `dwell.json` – FSM state (when using LabelDwell with config)
 
-These files are written automatically after each `Classifier.predict()` and `LabelDwell.apply()`, so the chat directory is populated as soon as you run the pipeline (no need to call `persist()` yourself in host apps like Cog).
+These files are written automatically after each `Classifier.predict()` and `LabelDwell.apply()`, so the chat directory is populated as soon as you run the pipeline (no need to call `persist()` yourself in host applications).
 
 Call `config.delete_chat_state(chat_id)` when a chat is closed so state is not kept forever (caller or a job is responsible).
 
@@ -163,7 +202,7 @@ Heimdall uses the `"heimdall"` logger and does not add real handlers by default 
 
 ### Host apps (recommended when heimdall is embedded)
 
-When heimdall runs inside another application that configures logging (Cog, a web server, etc.), **do not call `configure_logging()`**. That function attaches heimdall-owned handlers and sets `propagate=False`, so heimdall logs never reach your app’s root logger or file handler and a separate heimdall log file will not appear where you expect.
+When heimdall runs inside another application that configures logging (e.g. a web server or API), **do not call `configure_logging()`**. That function attaches heimdall-owned handlers and sets `propagate=False`, so heimdall logs never reach your app’s root logger or file handler and a separate heimdall log file will not appear where you expect.
 
 **Use `set_log_level()` only.** Then heimdall logs propagate to the root logger and go wherever your app routes them (e.g. a single app log file).
 
@@ -171,7 +210,7 @@ When heimdall runs inside another application that configures logging (Cog, a we
 import logging
 from heimdall import set_log_level
 
-# In your app startup or Cog predictor setup:
+# In your app startup:
 set_log_level(logging.INFO)   # or logging.DEBUG
 ```
 
