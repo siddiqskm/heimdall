@@ -162,6 +162,108 @@ poetry run python examples/gatekeeper_bot.py
 
 ---
 
+## Auxiliary Classification
+
+Applications can inject domain-specific classification corpora to get additional classification dimensions beyond the core labels (REQUEST, HOSTILE, SILENT, TOPIC_RESET).
+
+### Example: Tool Intent Classification
+
+```python
+from pathlib import Path
+from heimdall import Classifier, Embedder, HeimdallConfig, default_config
+
+# Define application-specific corpus
+tool_intent_corpus = {
+    "chat": [
+        "User continues conversation naturally",
+        "User asks a question about current topic",
+    ],
+    "search": [
+        "User wants to find what was said",
+        "User asks 'what did we discuss'",
+    ],
+    "summarize": [
+        "User says 'summarize this chat'",
+        "User requests 'create a summary'",
+    ],
+}
+
+# Create classifier with auxiliary corpus
+config = default_config()  # or HeimdallConfig(state_dir=Path("~/.heimdall").expanduser())
+clf = Classifier(
+    config=config,
+    chat_id="conversation-123",
+    auxiliary_corpora={
+        "tool_intent": tool_intent_corpus,
+    },
+)
+
+# Classify
+embedder = Embedder()
+vec = embedder.encode("What did we decide about the database?")
+pred = clf.predict(vec, text="What did we decide about the database?")
+
+# Core classification
+print(f"Label: {pred.label}")  # REQUEST
+
+# Auxiliary classification
+if pred.auxiliary and "tool_intent" in pred.auxiliary:
+    intent, confidence = pred.auxiliary["tool_intent"]
+    print(f"Tool intent: {intent} ({confidence:.2f})")  # search (0.87)
+```
+
+### Multiple Namespaces
+
+You can define multiple auxiliary classification dimensions:
+
+```python
+clf = Classifier(
+    config=config,
+    auxiliary_corpora={
+        "tool_intent": {...},
+        "sentiment": {
+            "positive": ["User is happy", ...],
+            "negative": ["User is frustrated", ...],
+        },
+        "urgency": {
+            "high": ["User needs this now", ...],
+            "low": ["User is browsing", ...],
+        },
+    },
+)
+
+pred = clf.predict(vec)
+# pred.auxiliary = {
+#     "tool_intent": ("search", 0.87),
+#     "sentiment": ("positive", 0.92),
+#     "urgency": ("low", 0.76),
+# }
+```
+
+### Optional parameters
+
+- **`embedder`**: Pass a pre-initialised `Embedder` instance to reuse when embedding corpus descriptions. Avoids loading the sentence model twice if you already have one.
+- **`auxiliary_threshold`**: Minimum cosine similarity for an auxiliary match to appear in `pred.auxiliary`. Defaults to `0.0` (always return best match). Raise to `0.3` or higher to suppress low-confidence results.
+
+```python
+embedder = Embedder()
+clf = Classifier(
+    config=config,
+    auxiliary_corpora={"tool_intent": tool_intent_corpus},
+    embedder=embedder,
+    auxiliary_threshold=0.3,
+)
+```
+
+### Design Principles
+
+- **Single embedding pass**: All classifications (core + auxiliary) use the same embedding
+- **Namespace isolation**: Each namespace is independent
+- **Application-owned**: Applications define their own corpora; Heimdall provides infrastructure
+- **Backward compatible**: Existing code without auxiliary corpora works unchanged
+
+---
+
 ## Configuration
 
 Only `state_dir` is required; everything else has defaults. Per-chat state is stored under `state_dir/chats/{chat_id}/`.
