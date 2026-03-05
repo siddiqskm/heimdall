@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "heimdall"
-version = "0.1.0"
+version = "0.1.1"
 description = "Conversation gatekeeper with dwell-based routing"
 authors = ["Siddiq Hussain"]
 license = "MIT"
