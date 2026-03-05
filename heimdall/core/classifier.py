@@ -12,6 +12,7 @@ from numpy.typing import NDArray
 
 from heimdall.adapt.config import DECAY, MAX_BIAS
 from heimdall.core.config import HeimdallConfig, default_config
+from heimdall.core.embedder import Embedder
 from heimdall.core.model_loader import (
     load_lr_model,
     load_offline_prototypes,
@@ -52,6 +53,11 @@ class Prediction:
     reset_score: float
     utility_score: float
 
+    # Auxiliary classification results
+    # Format: {"namespace": (category, confidence), ...}
+    # Example: {"tool_intent": ("search_past", 0.87)}
+    auxiliary: dict[str, tuple[str, float]] | None = None
+
     # backward compatibility: allow tuple unpacking
     def __iter__(self) -> Iterator[Any]:
         yield self.label
@@ -66,13 +72,46 @@ class Prediction:
 class Classifier:
     """
     One instance per chat. Pass chat_id to resume; omit to start a new chat.
+
+    Supports auxiliary classification namespaces - applications can inject
+    domain-specific corpora to get additional classification dimensions
+    beyond the core labels (REQUEST, HOSTILE, etc.).
     """
 
     def __init__(
         self,
         config: HeimdallConfig | None = None,
         chat_id: str | None = None,
+        auxiliary_corpora: dict[str, dict[str, list[str]]] | None = None,
+        embedder: Embedder | None = None,
+        auxiliary_threshold: float = 0.0,
     ) -> None:
+        """
+        Args:
+            config: Heimdall config
+            chat_id: Resume existing chat or None for new chat
+            auxiliary_corpora: Optional domain-specific corpora for auxiliary classification
+                Format: {
+                    "namespace": {
+                        "category1": ["description 1", "description 2", ...],
+                        "category2": ["description 1", "description 2", ...],
+                    }
+                }
+                Example from Cog:
+                {
+                    "tool_intent": {
+                        "chat": ["User continues conversation...", ...],
+                        "search_past": ["User wants to find what was said...", ...],
+                        "trigger_summary": ["User says 'summarize this chat'", ...],
+                    }
+                }
+            embedder: Optional pre-initialised Embedder to reuse. If omitted and
+                auxiliary_corpora is provided, a temporary Embedder is created just
+                for corpus pre-computation.
+            auxiliary_threshold: Minimum cosine similarity for an auxiliary match to
+                be included in Prediction.auxiliary. Defaults to 0.0 (always return
+                best match). Raise this (e.g. 0.3) to suppress low-confidence results.
+        """
 
         self.config = config or default_config()
         self.config.ensure_dirs()
@@ -119,9 +158,82 @@ class Classifier:
         self._recent_vectors: list[EmbeddingVector] = []
         self._max_recent: int = 20
 
+        # ---- Auxiliary classifiers ----
+        self._auxiliary_classifiers: dict[str, PrototypeStore] = {}
+        self._auxiliary_threshold: float = auxiliary_threshold
+
+        if auxiliary_corpora:
+            self._build_auxiliary_classifiers(auxiliary_corpora, embedder=embedder)
+
     @property
     def chat_id(self) -> str:
         return self._chat_id
+
+    # ------------------------------------------------------------------
+    # Auxiliary classification
+    # ------------------------------------------------------------------
+
+    def _build_auxiliary_classifiers(
+        self,
+        corpora: dict[str, dict[str, list[str]]],
+        embedder: Embedder | None = None,
+    ) -> None:
+        """
+        Build prototype stores for auxiliary classification namespaces.
+        Each namespace gets its own PrototypeStore with embeddings pre-computed.
+
+        Args:
+            corpora: Namespace → {category → descriptions} mapping.
+            embedder: Optional Embedder to reuse. A new instance is created only if
+                one is not provided, avoiding a redundant model load when the caller
+                already owns an Embedder.
+        """
+        enc = embedder or Embedder()
+
+        for namespace, categories in corpora.items():
+            store = PrototypeStore(max_per_label=50)
+
+            for category, descriptions in categories.items():
+                for desc in descriptions:
+                    vec = enc.encode(desc)
+                    store.add(category, vec)  # type: ignore
+
+            self._auxiliary_classifiers[namespace] = store
+
+            logger.info(
+                "Built auxiliary classifier '%s' with %d categories, %d descriptions",
+                namespace,
+                len(categories),
+                sum(len(descs) for descs in categories.values()),
+            )
+
+    def _compute_auxiliary(
+        self,
+        vector: EmbeddingVector,
+    ) -> dict[str, tuple[str, float]] | None:
+        """
+        Run all auxiliary classifiers against *vector* and return the results.
+        Returns None when no auxiliary corpora were injected.
+        """
+        if not self._auxiliary_classifiers:
+            return None
+
+        results: dict[str, tuple[str, float]] = {}
+        for namespace, store in self._auxiliary_classifiers.items():
+            category, aux_confidence = store.match(
+                vector,
+                threshold=self._auxiliary_threshold,
+            )
+            if category is not None:
+                results[namespace] = (category, aux_confidence)
+                logger.debug(
+                    "Auxiliary '%s': %s (%.3f)",
+                    namespace,
+                    category,
+                    aux_confidence,
+                )
+
+        return results if results else None
 
     # ------------------------------------------------------------------
     # Model compatibility
@@ -167,7 +279,7 @@ class Classifier:
     ) -> Prediction:
 
         # --------------------------------------------------------------
-        # Compute Scores
+        # Compute Scores + Auxiliary (done once; shared across all paths)
         # --------------------------------------------------------------
 
         scores: Scores = self._score_engine.compute(
@@ -178,6 +290,8 @@ class Classifier:
             user_prototypes=self.user_prototypes,
             session_prototypes=self.session_prototypes,
         )
+
+        auxiliary = self._compute_auxiliary(vector)
 
         # --------------------------------------------------------------
         # ORIGINAL LR / PROTOTYPE LOGIC (Baseline)
@@ -197,6 +311,7 @@ class Classifier:
                 scores.hostile_score,
                 scores.reset_score,
                 scores.utility_score,
+                auxiliary=auxiliary,
             )
 
         # --- User prototypes ---
@@ -213,6 +328,7 @@ class Classifier:
                 scores.hostile_score,
                 scores.reset_score,
                 scores.utility_score,
+                auxiliary=auxiliary,
             )
 
         # --- LR fallback ---
@@ -256,6 +372,7 @@ class Classifier:
                 scores.hostile_score,
                 scores.reset_score,
                 scores.utility_score,
+                auxiliary=auxiliary,
             )
 
         # --------------------------------------------------------------
@@ -333,6 +450,7 @@ class Classifier:
             scores.hostile_score,
             scores.reset_score,
             scores.utility_score,
+            auxiliary=auxiliary,
         )
 
     # ------------------------------------------------------------------
